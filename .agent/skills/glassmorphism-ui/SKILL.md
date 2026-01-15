@@ -1,6 +1,6 @@
 ---
 name: glassmorphism-ui
-description: Chuyên gia thiết kế UI phong cách Premium 3D Glassmorphism (Dark Mode Default). Responsive All Devices, Typography System (VI/EN), Color Palette, Card Design, Vanilla JS Interactions, Accessibility (ARIA, Keyboard Nav).
+description: Chuyên gia thiết kế UI phong cách Premium 3D Glassmorphism (Dark Mode Default). Responsive All Devices, Typography System (VI/EN), Color Palette, Card Design, jQuery Interactions, Accessibility (ARIA, Keyboard Nav).
 ---
 
 # Premium 3D Glassmorphism System (Ultimate Edition v6)
@@ -875,16 +875,42 @@ $(document).ready(function() {
     $('[data-counter]').each(function() {
         observer.observe(this);
     });
+
+    /* ========== LAZY LOAD (jQuery) ========== */
+    if ('IntersectionObserver' in window) {
+        const lazyObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const $img = $(entry.target);
+                    $img.attr('src', $img.data('src'));
+                    $img.removeAttr('data-src');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '50px' });
+        
+        $('img[data-src]').each(function() {
+            lazyObserver.observe(this);
+        });
+    }
+
+    /* ========== PARALLAX (jQuery) ========== */
+    $(window).on('scroll', function() {
+        const scrolled = $(window).scrollTop();
+        $('[data-parallax]').each(function() {
+            const speed = $(this).data('parallax') || 0.5;
+            $(this).css('transform', `translateY(${scrolled * speed}px)`);
+        });
+    });
 });
 ```
 
 /* ========== TOAST NOTIFICATION HELPER ========== */
+/* ========== TOAST NOTIFICATION HELPER (jQuery) ========== */
 window.showToast = (message, type = 'success', duration = 3000) => {
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container';
-        document.body.appendChild(container);
+    let $container = $('.toast-container');
+    if (!$container.length) {
+        $container = $('<div class="toast-container"></div>').appendTo('body');
     }
     
     const iconMap = {
@@ -895,23 +921,21 @@ window.showToast = (message, type = 'success', duration = 3000) => {
     };
     const iconClass = iconMap[type] || iconMap.info;
     
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${message}`;
+    const $toast = $(`
+        <div class="toast ${type}">
+            <i class="fa-solid ${iconClass}"></i> ${message}
+        </div>
+    `);
     
-    container.appendChild(toast);
-    
-    // Trigger reflow for transition
-    void toast.offsetWidth; 
-    
-    // No specific enter animation class needed if CSS handles it via keyframes or default state
-    // But let's assume CSS has animation: toast-slide-in
+    $container.append($toast);
     
     setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
+        $toast.css({ 
+            opacity: 0, 
+            transform: 'translateX(100%)', 
+            transition: 'all 0.3s ease' 
+        });
+        setTimeout(() => $toast.remove(), 300);
     }, duration);
 };
 ```
