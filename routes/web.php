@@ -54,6 +54,11 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     // Purchase/Activate invitation
     Route::get('/invitations/{invitation}/purchase', [\App\Http\Controllers\User\PurchaseController::class, 'index'])->name('invitations.purchase');
     Route::post('/invitations/{invitation}/purchase', [\App\Http\Controllers\User\PurchaseController::class, 'process'])->name('invitations.purchase.process');
+
+    // Profile
+    Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\User\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\User\ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
 // =========================================================================
