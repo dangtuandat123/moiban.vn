@@ -3,46 +3,49 @@ name: glassmorphism-ui
 description: Chuyên gia thiết kế UI phong cách Premium 3D Glassmorphism (Dark Mode Default). Responsive All Devices, Typography System (VI/EN), Color Palette, Card Design, Vanilla JS Interactions, Accessibility (ARIA, Keyboard Nav).
 ---
 
-# Premium 3D Glassmorphism System (Ultimate Edition v5)
+# Premium 3D Glassmorphism System (Ultimate Edition v6)
 
 Bạn là chuyên gia UI/UX hàng đầu. Nhiệm vụ của bạn là tạo ra giao diện **Glassmorphism** hoàn hảo, bóng bẩy, hiện đại và **dễ tiếp cận (Accessible)**.
 
 ## 1. Triết lý thiết kế (Design Philosophy)
 -   **Dark Mode First:** Giao diện mặc định luôn là nền tối (`bg-slate-950` hoặc `#020617`).
 -   **Mobile First Responsive:** Thiết kế từ mobile lên desktop, sử dụng breakpoints chuẩn.
--   **Performance Optimized:** Sử dụng `will-change: transform` cho element động. Không dùng jQuery, chỉ dùng Vanilla JS.
--   **Full Accessibility (a11y):**
-    -   Độ tương phản văn bản đạt chuẩn WCAG AA (Contrast > 4.5:1).
-    -   **ARIA Attributes:** Bắt buộc cho các component tùy chỉnh (Dropdown, Modal, Tab).
-    -   **Full Keyboard Navigation:** Tab, Enter, Escape, Arrow Keys.
-    -   Luôn có trạng thái `:focus-visible` rõ ràng (outline màu tím).
+-   **Tech Stack Chuẩn:**
+    -   **CSS:** TailwindCSS (Styling), FontAwesome (Icons).
+    -   **JS:** jQuery (Logic), Select2 (Dropdowns).
+    -   **Animation:** CSS Transitions + Keyframes (Performance Optimized).
 -   **Low-tech User Friendliness (Thân thiện với người dùng Low-tech):**
     -   **Nút bấm lớn:** Kích thước tối thiểu 44x44px cho mọi thao tác chạm.
     -   **Nhãn rõ ràng:** Không dùng icon đơn độc (trừ khi quá phổ biến như Search/Menu), luôn kèm text label.
     -   **Phản hồi tức thì:** Mọi cú click đều phải có hiệu ứng (Ripple, Loading, Toast) để người dùng biết hệ thống đang xử lý.
     -   **Tránh ẩn giấu:** Hạn chế các menu ẩn sâu, thao tác vuốt phức tạp.
--   **Deep Critical Thinking (Tư duy Phản biện Sâu):**
-    -   Luôn tự đặt câu hỏi: "Component này có thực sự cần thiết không?", "Người dùng 60 tuổi có hiểu cách dùng không?".
-    -   Không thiết kế chỉ để "cho đẹp", phải thiết kế để "dễ dùng".
 
-## 1.1 Quy trình Tư duy Thiết kế (Design Reasoning Protocol)
-Trước khi code bất kỳ component nào, hãy thực hiện quy trình suy luận sau:
+## 1.1 Quy trình Tư duy Thiết kế & Tự Kiểm Tra (Critical Design Protocol)
+**BẮT BUỘC:** Trước khi code bất kỳ component nào, bạn phải thực hiện các bước sau:
 
-1.  **Question (Đặt câu hỏi):**
-    -   "Tại sao lại dùng Dropdown ở đây? Có phải chỉ có 3 lựa chọn không? Nếu vậy dùng Radio Button hoặc Segmented Control có nhanh hơn không?"
-    -   "Nút này đặt ở góc màn hình có dễ bấm trên điện thoại màn hình lớn không?"
-    -   "Màu chữ này trên nền kính mờ có đủ đọc khi ra ngoài trời nắng không?"
+### Bước 1: Suy luận Thiết kế (Design Reasoning)
+Tự đặt câu hỏi phản biện:
+1.  **"Thiết kế như vậy có hợp lý không?"**
+    -   *Ví dụ:* Tại sao dùng Modal ở đây? Người dùng có bị mất ngữ cảnh không?
+    -   *Ví dụ:* Nút "Lưu" đặt ở góc trái có thuận tay người dùng mobile không?
+2.  **"Component này có đúng mục đích không?"**
+    -   Dropdown này có quá nhiều item không? Nếu > 10 item thì phải có Search (dùng Select2).
+    -   Nếu chỉ có 2 option (Nam/Nữ), tại sao không dùng Radio Button cho nhanh?
 
-2.  **Analyze (Phân tích):**
-    -   *Lỗi thường gặp:* Dùng Dropdown cho danh sách < 5 mục -> Tốn 2 lần click.
-    -   *Giải pháp:* Chuyển sang dạng Chips hoặc Radio Group (chỉ tốn 1 click).
+### Bước 2: Liệt kê Lỗi & Xung đột Tiềm ẩn (Pre-flight Check)
+Tự liệt kê các vấn đề có thể xảy ra và cách giải quyết:
+-   **Conflict:** Component này có đè lên Header/Footer khi scroll không? (Z-index check).
+-   **Interaction:** Khi mở Modal, Dropdown bên dưới có bị lòi ra không?
+-   **Data:** Nếu dữ liệu dài quá thì giao diện có vỡ không? (Text overflow check).
+-   **Mobile:** Trên màn hình nhỏ (iPhone SE), nút này có bị che bởi bàn phím ảo không?
 
-3.  **Refine (Tinh chỉnh):**
-    -   Nếu bắt buộc dùng Dropdown, hãy chắc chắn nó hỗ trợ tìm kiếm (nếu > 10 mục) và hỗ trợ phím mũi tên.
+### Bước 3: Giải quyết & Sáng tạo
+-   Sau khi liệt kê lỗi, hãy đưa ra giải pháp ngay trong code (ví dụ: thêm `z-50`, `truncate`, `overflow-y-auto`).
+-   **Sáng tạo:** Đừng làm nhàm chán. Thêm chút "gia vị" (glow effect, glass border) để giao diện trông Premium.
 
-4.  **Low-tech Check:**
-    -   Đưa cho "bà ngoại" dùng thử (tưởng tượng). Nếu bà hỏi "Bấm vào đâu?", nghĩa là thiết kế thất bại.
-
+### Bước 4: Kiểm tra Tương tác (Interaction Check)
+-   Đảm bảo các thành phần tương tác mượt mà với nhau.
+-   Ví dụ: Chọn Dropdown -> Tự động focus vào Input tiếp theo.
 
 ---
 
@@ -56,7 +59,13 @@ Trước khi code bất kỳ component nào, hãy thực hiện quy trình suy l
   <!-- Font Stack: Vietnamese + English -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- jQuery & Select2 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <style>
     :root {
@@ -272,57 +281,75 @@ Trước khi code bất kỳ component nào, hãy thực hiện quy trình suy l
       background-clip: text;
     }
 
-    /* ========== DROPDOWN STYLES ========== */
-    .glass-dropdown { position: relative; width: 100%; z-index: var(--z-dropdown); }
-    .glass-dropdown-select {
-      background: rgba(0, 0, 0, 0.3);
+    /* ========== SELECT2 CUSTOMIZATION (Glassmorphism) ========== */
+    .select2-container { width: 100% !important; }
+    
+    .select2-container--default .select2-selection--single {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid var(--color-border-subtle) !important;
+      border-radius: var(--radius-xl) !important;
+      height: 50px !important;
+      display: flex !important;
+      align-items: center !important;
       backdrop-filter: blur(10px);
-      border: 1px solid var(--color-border-subtle);
-      border-radius: var(--radius-xl);
-      padding: var(--space-3) var(--space-5);
-      color: var(--color-text-primary);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       transition: all var(--transition-base);
-      font-size: var(--text-base);
     }
-    @media (min-width: 768px) { 
-      .glass-dropdown-select { padding: var(--space-4) var(--space-5); } 
+    
+    .select2-container--default .select2-selection--single:hover,
+    .select2-container--default.select2-container--open .select2-selection--single {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: var(--color-border-strong) !important;
     }
-    .glass-dropdown-select:hover, .glass-dropdown-select:focus {
-      background: var(--color-surface-glass-hover);
-      border-color: var(--color-border-strong);
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: var(--color-text-primary) !important;
+      padding-left: var(--space-5) !important;
+      font-size: var(--text-base) !important;
+      font-family: var(--font-default) !important;
     }
-    .glass-dropdown-list {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0; right: 0;
-      background: var(--color-surface-overlay);
-      border: 1px solid var(--color-border-subtle);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      opacity: 0; visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-xl);
-      max-height: 300px;
-      overflow-y: auto;
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 48px !important;
+      right: var(--space-4) !important;
     }
-    .glass-dropdown.active .glass-dropdown-list { opacity: 1; visibility: visible; transform: translateY(0); }
-    .glass-dropdown-option {
-      padding: var(--space-3) var(--space-5);
-      color: var(--color-text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: var(--color-text-muted) transparent transparent transparent !important;
     }
-    .glass-dropdown-option:hover, .glass-dropdown-option:focus, .glass-dropdown-option.highlighted { 
-      background: var(--color-surface-glass-hover); 
-      color: var(--color-text-primary); 
-      outline: none;
+
+    /* Dropdown Menu */
+    .select2-dropdown {
+      background: var(--color-surface-elevated) !important;
+      border: 1px solid var(--color-border-subtle) !important;
+      border-radius: var(--radius-xl) !important;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-xl) !important;
+      overflow: hidden !important;
+      z-index: var(--z-dropdown) !important;
     }
-    .glass-dropdown-option.selected { background: rgba(236, 72, 153, 0.2); color: var(--color-text-primary); }
+
+    .select2-search--dropdown .select2-search__field {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid var(--color-border-subtle) !important;
+      border-radius: var(--radius-md) !important;
+      color: var(--color-text-primary) !important;
+      padding: var(--space-2) var(--space-3) !important;
+    }
+
+    .select2-results__option {
+      padding: var(--space-3) var(--space-5) !important;
+      color: var(--color-text-secondary) !important;
+      font-size: var(--text-base) !important;
+    }
+
+    .select2-results__option--highlighted[aria-selected] {
+      background: var(--color-primary-600) !important;
+      color: white !important;
+    }
+
+    .select2-results__option[aria-selected="true"] {
+      background: rgba(236, 72, 153, 0.2) !important;
+      color: var(--color-text-primary) !important;
+    }
 
     /* ========== FORM STATES ========== */
     .input-error {
@@ -682,385 +709,174 @@ Trước khi code bất kỳ component nào, hãy thực hiện quy trình suy l
 
 ---
 
-## 6. Dropdown: HTML Template (Accessible)
+## 6. Dropdown: Select2 Implementation (Standard)
 
 ```html
-<!-- ARIA: role, aria-haspopup, aria-expanded, aria-labelledby -->
-<div class="glass-dropdown" id="my-dropdown">
-  <div class="glass-dropdown-select" 
-       tabindex="0" 
-       role="combobox" 
-       aria-haspopup="listbox" 
-       aria-expanded="false" 
-       aria-labelledby="dropdown-label">
-    <span class="selected-text">Chọn một mục</span>
-    <i class="fa-solid fa-chevron-down text-xs opacity-50 transition-transform"></i>
-  </div>
-  <div class="glass-dropdown-list" role="listbox" aria-labelledby="dropdown-label">
-    <div class="glass-dropdown-option" role="option" tabindex="-1" data-value="1">Mục 1</div>
-    <div class="glass-dropdown-option" role="option" tabindex="-1" data-value="2">Mục 2</div>
-  </div>
-  <input type="hidden" name="my_field" value="">
+<div class="w-full">
+  <label class="block text-sm text-white/70 mb-2">Chọn tùy chọn</label>
+  <select class="glass-select2" name="state">
+    <option value="AL">Alabama</option>
+    <option value="WY">Wyoming</option>
+    <option value="NY">New York</option>
+  </select>
 </div>
 ```
 
 ---
 
-## 7. Vanilla JS Interactions Library (No jQuery)
+## 7. jQuery Interactions Library
 
 ```javascript
-document.addEventListener('DOMContentLoaded', () => {
-    /* ========== UTILS ========== */
-    const $ = (selector, parent = document) => parent.querySelector(selector);
-    const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
-
-    /* ========== DROPDOWN (Accessible + Keyboard + Click Outside) ========== */
-    const closeAllDropdowns = (except = null) => {
-        $$('.glass-dropdown.active').forEach(el => {
-            if (el !== except) {
-                el.classList.remove('active');
-                const select = $('.glass-dropdown-select', el);
-                if (select) select.setAttribute('aria-expanded', 'false');
-            }
-        });
-    };
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.glass-dropdown')) closeAllDropdowns();
+$(document).ready(function() {
+    
+    /* ========== INITIALIZE SELECT2 ========== */
+    $('.glass-select2').select2({
+        minimumResultsForSearch: 10, // Hide search if < 10 items
+        width: '100%'
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeAllDropdowns();
-    });
-
-    $$('.glass-dropdown').forEach(dropdown => {
-        const select = $('.glass-dropdown-select', dropdown);
-        const list = $('.glass-dropdown-list', dropdown);
-        const options = $$('.glass-dropdown-option', dropdown);
-        const hiddenInput = $('input[type="hidden"]', dropdown);
-        const textDisplay = $('.selected-text', dropdown);
-        let highlightedIndex = -1;
-
-        if (!select || !list) return;
-
-        const toggleDropdown = () => {
-            const isActive = dropdown.classList.contains('active');
-            closeAllDropdowns(isActive ? null : dropdown); // Close others if opening
-            
-            if (!isActive) {
-                dropdown.classList.add('active');
-                select.setAttribute('aria-expanded', 'true');
-                // Find currently selected index
-                highlightedIndex = options.findIndex(opt => opt.classList.contains('selected'));
-                if (highlightedIndex === -1) highlightedIndex = 0;
-                updateHighlight();
-            }
-        };
-
-        const updateHighlight = () => {
-            options.forEach((opt, idx) => {
-                if (idx === highlightedIndex) {
-                    opt.classList.add('highlighted');
-                    opt.scrollIntoView({ block: 'nearest' });
-                } else {
-                    opt.classList.remove('highlighted');
-                }
-            });
-        };
-
-        const selectOption = (option) => {
-            if (!option) return;
-            const value = option.dataset.value;
-            const label = option.textContent;
-
-            textDisplay.textContent = label;
-            if (hiddenInput) {
-                hiddenInput.value = value;
-                // Trigger change event manually
-                hiddenInput.dispatchEvent(new Event('change'));
-            }
-
-            options.forEach(o => o.classList.remove('selected'));
-            option.classList.add('selected');
-            
-            closeAllDropdowns();
-            select.focus(); // Return focus to trigger
-        };
-
-        // Event Listeners
-        select.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleDropdown();
-        });
-
-        select.addEventListener('keydown', (e) => {
-            const isActive = dropdown.classList.contains('active');
-            if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
-                e.preventDefault();
-            }
-
-            if (e.key === 'ArrowDown') {
-                if (!isActive) toggleDropdown();
-                else {
-                    highlightedIndex = (highlightedIndex + 1) % options.length;
-                    updateHighlight();
-                }
-            } else if (e.key === 'ArrowUp') {
-                if (!isActive) toggleDropdown();
-                else {
-                    highlightedIndex = (highlightedIndex - 1 + options.length) % options.length;
-                    updateHighlight();
-                }
-            } else if (e.key === 'Enter' || e.key === ' ') {
-                if (isActive && highlightedIndex >= 0) {
-                    selectOption(options[highlightedIndex]);
-                } else {
-                    toggleDropdown();
-                }
-            }
-        });
-
-        options.forEach((opt, idx) => {
-            opt.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectOption(opt);
-            });
-            opt.addEventListener('mouseenter', () => {
-                highlightedIndex = idx;
-                updateHighlight();
-            });
-        });
-    });
-
-    /* ========== MODAL (Focus Trap + Animation) ========== */
-    const openModal = (modalId) => {
-        const modal = $(modalId);
-        if (!modal) return;
+    /* ========== MODAL (jQuery) ========== */
+    $('[data-modal-target]').on('click', function(e) {
+        e.preventDefault();
+        const targetId = $(this).data('modal-target');
+        const $modal = $(targetId);
         
-        modal.classList.remove('hidden');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('overflow-hidden');
-        
-        // Animation
-        const content = $('.modal-content', modal);
-        if (content) {
+        if ($modal.length) {
+            $modal.removeClass('hidden').attr('aria-hidden', 'false');
+            $('body').addClass('overflow-hidden');
+            
+            // Animation
+            const $content = $modal.find('.modal-content');
             setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
+                $content.removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
             }, 10);
         }
-        
-        // Focus first close button or input
-        const firstFocus = $('[data-modal-close], input, button', modal);
-        if (firstFocus) firstFocus.focus();
-    };
+    });
 
-    const closeModal = (modal) => {
-        if (!modal) return;
+    $('[data-modal-close], .modal-overlay').on('click', function() {
+        const $modal = $(this).closest('.fixed'); // Assuming modal wrapper has .fixed
+        const $content = $modal.find('.modal-content');
         
-        const content = $('.modal-content', modal);
-        if (content) {
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-        }
+        $content.removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
         
-        modal.setAttribute('aria-hidden', 'true');
         setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+            $modal.addClass('hidden').attr('aria-hidden', 'true');
+            $('body').removeClass('overflow-hidden');
         }, 300);
-    };
-
-    document.addEventListener('click', (e) => {
-        const trigger = e.target.closest('[data-modal-target]');
-        if (trigger) {
-            e.preventDefault();
-            openModal(trigger.dataset.modalTarget);
-        }
-
-        const closeBtn = e.target.closest('[data-modal-close]');
-        if (closeBtn) {
-            closeModal(closeBtn.closest('.fixed'));
-        }
-
-        if (e.target.classList.contains('modal-overlay')) {
-            closeModal(e.target.closest('.fixed'));
-        }
     });
 
-    /* ========== TABS ========== */
-    $$('.glass-tabs').forEach(tabGroup => {
-        const buttons = $$('[role="tab"]', tabGroup);
+    /* ========== TABS (jQuery) ========== */
+    $('.glass-tabs [role="tab"]').on('click', function() {
+        const $btn = $(this);
+        const targetId = $btn.attr('aria-controls');
+        const $group = $btn.closest('.glass-tabs');
         
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Deactivate all
-                buttons.forEach(b => {
-                    b.setAttribute('aria-selected', 'false');
-                    b.classList.remove('active');
-                    const panel = $(b.getAttribute('aria-controls'));
-                    if (panel) panel.classList.add('hidden');
-                });
-
-                // Activate clicked
-                btn.setAttribute('aria-selected', 'true');
-                btn.classList.add('active');
-                const targetPanel = $(btn.getAttribute('aria-controls'));
-                if (targetPanel) targetPanel.classList.remove('hidden');
-            });
-
-            // Keyboard Nav
-            btn.addEventListener('keydown', (e) => {
-                const idx = buttons.indexOf(btn);
-                let nextIdx = -1;
-
-                if (e.key === 'ArrowRight') nextIdx = (idx + 1) % buttons.length;
-                if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + buttons.length) % buttons.length;
-
-                if (nextIdx !== -1) {
-                    e.preventDefault();
-                    buttons[nextIdx].focus();
-                    buttons[nextIdx].click();
-                }
-            });
-        });
+        // Deactivate all in group
+        $group.find('[role="tab"]').attr('aria-selected', 'false').removeClass('active');
+        $group.find('[role="tabpanel"]').addClass('hidden');
+        
+        // Activate clicked
+        $btn.attr('aria-selected', 'true').addClass('active');
+        $('#' + targetId).removeClass('hidden');
     });
 
-    /* ========== ACCORDION ========== */
-    document.addEventListener('click', (e) => {
-        const trigger = e.target.closest('.glass-accordion-trigger');
-        if (!trigger) return;
-
-        const item = trigger.closest('.glass-accordion-item');
-        const content = $('.glass-accordion-content', item);
-        const parent = item.closest('.glass-accordion');
-        const isOpen = item.classList.contains('open');
-
+    /* ========== ACCORDION (jQuery) ========== */
+    $('.glass-accordion-trigger').on('click', function() {
+        const $trigger = $(this);
+        const $item = $trigger.closest('.glass-accordion-item');
+        const $content = $item.find('.glass-accordion-content');
+        const $parent = $item.closest('.glass-accordion');
+        
         // Close others if not multi-select
-        if (parent && !parent.classList.contains('multi')) {
-            $$('.glass-accordion-item.open', parent).forEach(sibling => {
-                if (sibling !== item) {
-                    sibling.classList.remove('open');
-                    // Reset inline styles for slideUp
-                    const sibContent = $('.glass-accordion-content', sibling);
-                    sibContent.style.maxHeight = null;
-                }
+        if ($parent.length && !$parent.hasClass('multi')) {
+            $parent.find('.glass-accordion-item.open').not($item).each(function() {
+                $(this).removeClass('open');
+                $(this).find('.glass-accordion-content').css('max-height', '');
             });
         }
-
-        if (isOpen) {
-            item.classList.remove('open');
-            content.style.maxHeight = null;
+        
+        if ($item.hasClass('open')) {
+            $item.removeClass('open');
+            $content.css('max-height', '');
         } else {
-            item.classList.add('open');
-            content.style.maxHeight = content.scrollHeight + "px";
+            $item.addClass('open');
+            $content.css('max-height', $content[0].scrollHeight + 'px');
         }
     });
 
     /* ========== SMOOTH SCROLL ========== */
-    document.addEventListener('click', (e) => {
-        const link = e.target.closest('a[href^="#"]');
-        if (link) {
-            const targetId = link.getAttribute('href');
-            const target = $(targetId);
-            if (target) {
-                e.preventDefault();
-                const headerOffset = 80;
-                const elementPosition = target.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
-                });
-            }
+    $('a[href^="#"]').on('click', function(e) {
+        const targetId = $(this).attr('href');
+        const $target = $(targetId);
+        
+        if ($target.length) {
+            e.preventDefault();
+            const headerOffset = 80;
+            const elementPosition = $target.offset().top;
+            const offsetPosition = elementPosition - headerOffset;
+            
+            $('html, body').animate({
+                scrollTop: offsetPosition
+            }, 800);
         }
     });
 
     /* ========== SCROLL REVEAL ========== */
-    const revealElements = $$('[data-reveal]');
     const checkReveal = () => {
-        const triggerBottom = window.innerHeight * 0.85;
-        revealElements.forEach(el => {
-            const boxTop = el.getBoundingClientRect().top;
+        const triggerBottom = $(window).height() * 0.85;
+        $('[data-reveal]').each(function() {
+            const boxTop = $(this).offset().top - $(window).scrollTop();
             if (boxTop < triggerBottom) {
-                const delay = el.dataset.revealDelay || 0;
-                setTimeout(() => el.classList.add('revealed'), delay);
+                const delay = $(this).data('reveal-delay') || 0;
+                setTimeout(() => $(this).addClass('revealed'), delay);
             }
         });
     };
-    window.addEventListener('scroll', checkReveal);
-    window.addEventListener('load', checkReveal);
-
-    /* ========== LAZY LOAD ========== */
-    if ('IntersectionObserver' in window) {
-        const lazyObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        }, { rootMargin: '50px' });
-        
-        $$('img[data-src]').forEach(img => lazyObserver.observe(img));
-    }
+    $(window).on('scroll load', checkReveal);
 
     /* ========== RIPPLE EFFECT ========== */
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.ripple');
-        if (btn) {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const circle = document.createElement('span');
-            circle.classList.add('ripple-effect');
-            circle.style.left = `${x}px`;
-            circle.style.top = `${y}px`;
-            
-            btn.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
-        }
+    $('.ripple').on('click', function(e) {
+        const $btn = $(this);
+        const offset = $btn.offset();
+        const x = e.pageX - offset.left;
+        const y = e.pageY - offset.top;
+        
+        const $circle = $('<span class="ripple-effect"></span>');
+        $circle.css({ top: y, left: x });
+        
+        $btn.append($circle);
+        setTimeout(() => $circle.remove(), 600);
     });
 
     /* ========== COUNTER ANIMATION ========== */
-    const counters = $$('[data-counter]');
-    const counterObserver = new IntersectionObserver((entries, observer) => {
+    // Simple Intersection Observer wrapper for jQuery elements
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const el = entry.target;
-                const target = parseInt(el.dataset.counter);
-                const duration = parseInt(el.dataset.counterDuration) || 2000;
-                const step = target / (duration / 16);
-                let current = 0;
+                const $el = $(entry.target);
+                const target = parseInt($el.data('counter'));
+                const duration = parseInt($el.data('counter-duration')) || 2000;
                 
-                const timer = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
+                $({ countNum: 0 }).animate({ countNum: target }, {
+                    duration: duration,
+                    easing: 'linear',
+                    step: function() {
+                        $el.text(Math.floor(this.countNum).toLocaleString());
+                    },
+                    complete: function() {
+                        $el.text(this.countNum.toLocaleString());
                     }
-                    el.textContent = Math.floor(current).toLocaleString();
-                }, 16);
-                
-                observer.unobserve(el);
+                });
+                observer.unobserve(entry.target);
             }
         });
     });
-    counters.forEach(c => counterObserver.observe(c));
-
-    /* ========== PARALLAX ========== */
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        $$('[data-parallax]').forEach(el => {
-            const speed = el.dataset.parallax || 0.5;
-            el.style.transform = `translateY(${scrolled * speed}px)`;
-        });
+    
+    $('[data-counter]').each(function() {
+        observer.observe(this);
     });
 });
+```
 
 /* ========== TOAST NOTIFICATION HELPER ========== */
 window.showToast = (message, type = 'success', duration = 3000) => {
@@ -1269,7 +1085,7 @@ window.showToast = (message, type = 'success', duration = 3000) => {
 | Color Palette (CSS Variables) | ✅ |
 | Card Components | ✅ |
 | Button System | ✅ |
-| Dropdown (Vanilla JS + ARIA) | ✅ |
+| Dropdown (Select2) | ✅ |
 | Modal (Focus Trap) | ✅ |
 | Tabs (Accessible) | ✅ |
 | Accordion | ✅ |
