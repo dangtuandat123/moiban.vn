@@ -1,22 +1,48 @@
 ---
 name: glassmorphism-ui
-description: Chuyên gia thiết kế UI phong cách Premium 3D Glassmorphism (Dark Mode Default). Responsive All Devices, Typography System (VI/EN), Color Palette, Card Design, jQuery Interactions, Accessibility (ARIA, Keyboard Nav).
+description: Chuyên gia thiết kế UI phong cách Premium 3D Glassmorphism (Dark Mode Default). Responsive All Devices, Typography System (VI/EN), Color Palette, Card Design, Vanilla JS Interactions, Accessibility (ARIA, Keyboard Nav).
 ---
 
-# Premium 3D Glassmorphism System (Ultimate Edition v4)
+# Premium 3D Glassmorphism System (Ultimate Edition v5)
 
 Bạn là chuyên gia UI/UX hàng đầu. Nhiệm vụ của bạn là tạo ra giao diện **Glassmorphism** hoàn hảo, bóng bẩy, hiện đại và **dễ tiếp cận (Accessible)**.
 
 ## 1. Triết lý thiết kế (Design Philosophy)
 -   **Dark Mode First:** Giao diện mặc định luôn là nền tối (`bg-slate-950` hoặc `#020617`).
 -   **Mobile First Responsive:** Thiết kế từ mobile lên desktop, sử dụng breakpoints chuẩn.
--   **Performance Optimized:** Sử dụng `will-change: transform` cho element động. Hạn chế `backdrop-filter` diện rộng.
+-   **Performance Optimized:** Sử dụng `will-change: transform` cho element động. Không dùng jQuery, chỉ dùng Vanilla JS.
 -   **Full Accessibility (a11y):**
     -   Độ tương phản văn bản đạt chuẩn WCAG AA (Contrast > 4.5:1).
     -   **ARIA Attributes:** Bắt buộc cho các component tùy chỉnh (Dropdown, Modal, Tab).
     -   **Full Keyboard Navigation:** Tab, Enter, Escape, Arrow Keys.
     -   Luôn có trạng thái `:focus-visible` rõ ràng (outline màu tím).
--   **Robust Logic:** Code JS phải xử lý Null check, Event Delegation, và các edge cases.
+-   **Low-tech User Friendliness (Thân thiện với người dùng Low-tech):**
+    -   **Nút bấm lớn:** Kích thước tối thiểu 44x44px cho mọi thao tác chạm.
+    -   **Nhãn rõ ràng:** Không dùng icon đơn độc (trừ khi quá phổ biến như Search/Menu), luôn kèm text label.
+    -   **Phản hồi tức thì:** Mọi cú click đều phải có hiệu ứng (Ripple, Loading, Toast) để người dùng biết hệ thống đang xử lý.
+    -   **Tránh ẩn giấu:** Hạn chế các menu ẩn sâu, thao tác vuốt phức tạp.
+-   **Deep Critical Thinking (Tư duy Phản biện Sâu):**
+    -   Luôn tự đặt câu hỏi: "Component này có thực sự cần thiết không?", "Người dùng 60 tuổi có hiểu cách dùng không?".
+    -   Không thiết kế chỉ để "cho đẹp", phải thiết kế để "dễ dùng".
+
+## 1.1 Quy trình Tư duy Thiết kế (Design Reasoning Protocol)
+Trước khi code bất kỳ component nào, hãy thực hiện quy trình suy luận sau:
+
+1.  **Question (Đặt câu hỏi):**
+    -   "Tại sao lại dùng Dropdown ở đây? Có phải chỉ có 3 lựa chọn không? Nếu vậy dùng Radio Button hoặc Segmented Control có nhanh hơn không?"
+    -   "Nút này đặt ở góc màn hình có dễ bấm trên điện thoại màn hình lớn không?"
+    -   "Màu chữ này trên nền kính mờ có đủ đọc khi ra ngoài trời nắng không?"
+
+2.  **Analyze (Phân tích):**
+    -   *Lỗi thường gặp:* Dùng Dropdown cho danh sách < 5 mục -> Tốn 2 lần click.
+    -   *Giải pháp:* Chuyển sang dạng Chips hoặc Radio Group (chỉ tốn 1 click).
+
+3.  **Refine (Tinh chỉnh):**
+    -   Nếu bắt buộc dùng Dropdown, hãy chắc chắn nó hỗ trợ tìm kiếm (nếu > 10 mục) và hỗ trợ phím mũi tên.
+
+4.  **Low-tech Check:**
+    -   Đưa cho "bà ngoại" dùng thử (tưởng tượng). Nếu bà hỏi "Bấm vào đâu?", nghĩa là thiết kế thất bại.
+
 
 ---
 
@@ -30,7 +56,6 @@ Bạn là chuyên gia UI/UX hàng đầu. Nhiệm vụ của bạn là tạo ra 
   <!-- Font Stack: Vietnamese + English -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -681,242 +706,398 @@ Bạn là chuyên gia UI/UX hàng đầu. Nhiệm vụ của bạn là tạo ra 
 
 ---
 
-## 7. jQuery Interactions Library
+## 7. Vanilla JS Interactions Library (No jQuery)
 
 ```javascript
-$(document).ready(function() {
-    /* ========== DROPDOWN (Keyboard + ARIA) ========== */
-    function closeAllDropdowns() {
-        $('.glass-dropdown').removeClass('active')
-            .find('.glass-dropdown-select').attr('aria-expanded', 'false');
-        $('.glass-dropdown-option').removeClass('highlighted');
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    /* ========== UTILS ========== */
+    const $ = (selector, parent = document) => parent.querySelector(selector);
+    const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 
-    $(document).on('click', function(e) { 
-        if (!$(e.target).closest('.glass-dropdown').length) closeAllDropdowns(); 
-    });
-    $(document).on('keydown', function(e) { 
-        if (e.key === 'Escape') closeAllDropdowns(); 
+    /* ========== DROPDOWN (Accessible + Keyboard + Click Outside) ========== */
+    const closeAllDropdowns = (except = null) => {
+        $$('.glass-dropdown.active').forEach(el => {
+            if (el !== except) {
+                el.classList.remove('active');
+                const select = $('.glass-dropdown-select', el);
+                if (select) select.setAttribute('aria-expanded', 'false');
+            }
+        });
+    };
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.glass-dropdown')) closeAllDropdowns();
     });
 
-    $('.glass-dropdown').each(function() {
-        const $dropdown = $(this);
-        const $select = $dropdown.find('.glass-dropdown-select');
-        const $options = $dropdown.find('.glass-dropdown-option');
-        const $hidden = $dropdown.find('input[type="hidden"]');
-        const $text = $dropdown.find('.selected-text');
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAllDropdowns();
+    });
+
+    $$('.glass-dropdown').forEach(dropdown => {
+        const select = $('.glass-dropdown-select', dropdown);
+        const list = $('.glass-dropdown-list', dropdown);
+        const options = $$('.glass-dropdown-option', dropdown);
+        const hiddenInput = $('input[type="hidden"]', dropdown);
+        const textDisplay = $('.selected-text', dropdown);
         let highlightedIndex = -1;
 
-        function toggleDropdown() {
-            const isActive = $dropdown.hasClass('active');
-            closeAllDropdowns();
+        if (!select || !list) return;
+
+        const toggleDropdown = () => {
+            const isActive = dropdown.classList.contains('active');
+            closeAllDropdowns(isActive ? null : dropdown); // Close others if opening
+            
             if (!isActive) {
-                $dropdown.addClass('active');
-                $select.attr('aria-expanded', 'true');
-                highlightedIndex = $options.filter('.selected').index();
+                dropdown.classList.add('active');
+                select.setAttribute('aria-expanded', 'true');
+                // Find currently selected index
+                highlightedIndex = options.findIndex(opt => opt.classList.contains('selected'));
                 if (highlightedIndex === -1) highlightedIndex = 0;
                 updateHighlight();
             }
-        }
+        };
 
-        function updateHighlight() {
-            $options.removeClass('highlighted').eq(highlightedIndex).addClass('highlighted')
-                .get(0)?.scrollIntoView({ block: 'nearest' });
-        }
+        const updateHighlight = () => {
+            options.forEach((opt, idx) => {
+                if (idx === highlightedIndex) {
+                    opt.classList.add('highlighted');
+                    opt.scrollIntoView({ block: 'nearest' });
+                } else {
+                    opt.classList.remove('highlighted');
+                }
+            });
+        };
 
-        function selectOption($opt) {
-            $text.text($opt.text());
-            $hidden.val($opt.data('value')).trigger('change');
-            $options.removeClass('selected');
-            $opt.addClass('selected');
+        const selectOption = (option) => {
+            if (!option) return;
+            const value = option.dataset.value;
+            const label = option.textContent;
+
+            textDisplay.textContent = label;
+            if (hiddenInput) {
+                hiddenInput.value = value;
+                // Trigger change event manually
+                hiddenInput.dispatchEvent(new Event('change'));
+            }
+
+            options.forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+            
             closeAllDropdowns();
-            $select.focus();
-        }
+            select.focus(); // Return focus to trigger
+        };
 
-        $select.on('click', function(e) { e.stopPropagation(); toggleDropdown(); });
-        $select.on('keydown', function(e) {
-            const isActive = $dropdown.hasClass('active');
-            if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) e.preventDefault();
+        // Event Listeners
+        select.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDropdown();
+        });
+
+        select.addEventListener('keydown', (e) => {
+            const isActive = dropdown.classList.contains('active');
+            if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
 
             if (e.key === 'ArrowDown') {
                 if (!isActive) toggleDropdown();
-                else { highlightedIndex = (highlightedIndex + 1) % $options.length; updateHighlight(); }
+                else {
+                    highlightedIndex = (highlightedIndex + 1) % options.length;
+                    updateHighlight();
+                }
             } else if (e.key === 'ArrowUp') {
                 if (!isActive) toggleDropdown();
-                else { highlightedIndex = (highlightedIndex - 1 + $options.length) % $options.length; updateHighlight(); }
+                else {
+                    highlightedIndex = (highlightedIndex - 1 + options.length) % options.length;
+                    updateHighlight();
+                }
             } else if (e.key === 'Enter' || e.key === ' ') {
-                if (isActive && highlightedIndex >= 0) selectOption($options.eq(highlightedIndex));
-                else toggleDropdown();
+                if (isActive && highlightedIndex >= 0) {
+                    selectOption(options[highlightedIndex]);
+                } else {
+                    toggleDropdown();
+                }
             }
         });
 
-        $options.on('click', function() { selectOption($(this)); });
-        $options.on('mouseenter', function() { highlightedIndex = $(this).index(); updateHighlight(); });
+        options.forEach((opt, idx) => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectOption(opt);
+            });
+            opt.addEventListener('mouseenter', () => {
+                highlightedIndex = idx;
+                updateHighlight();
+            });
+        });
     });
 
-    /* ========== MODAL (Escape + Click Outside + Focus Trap) ========== */
-    $(document).on('click', '[data-modal-target]', function(e) {
-        e.preventDefault();
-        const $modal = $($(this).data('modal-target'));
-        if (!$modal.length) return;
+    /* ========== MODAL (Focus Trap + Animation) ========== */
+    const openModal = (modalId) => {
+        const modal = $(modalId);
+        if (!modal) return;
         
-        $modal.removeClass('hidden').attr('aria-hidden', 'false');
-        setTimeout(() => $modal.find('.modal-content').removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100'), 10);
-        $('body').addClass('overflow-hidden');
-        $modal.find('[data-modal-close]').first().focus();
-    });
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        
+        // Animation
+        const content = $('.modal-content', modal);
+        if (content) {
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+        
+        // Focus first close button or input
+        const firstFocus = $('[data-modal-close], input, button', modal);
+        if (firstFocus) firstFocus.focus();
+    };
 
-    function closeModal($modal) {
-        if (!$modal || !$modal.length) return;
-        $modal.find('.modal-content').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
-        $modal.attr('aria-hidden', 'true');
-        setTimeout(() => { $modal.addClass('hidden'); $('body').removeClass('overflow-hidden'); }, 300);
-    }
+    const closeModal = (modal) => {
+        if (!modal) return;
+        
+        const content = $('.modal-content', modal);
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        
+        modal.setAttribute('aria-hidden', 'true');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }, 300);
+    };
 
-    $(document).on('click', '[data-modal-close]', function() { closeModal($(this).closest('.fixed')); });
-    $(document).on('click', '.modal-overlay', function(e) { if (e.target === this) closeModal($(this).closest('.fixed')); });
-    $(document).on('keydown', function(e) { if (e.key === 'Escape') closeModal($('.fixed[aria-hidden="false"]')); });
-
-    /* ========== TABS (Accessible) ========== */
-    $('.glass-tabs').each(function() {
-        const $tabs = $(this);
-        const $buttons = $tabs.find('[role="tab"]');
-        const $contents = $tabs.find('[role="tabpanel"]');
-
-        function activateTab($btn) {
-            $buttons.attr('aria-selected', 'false').removeClass('active');
-            $contents.addClass('hidden');
-            
-            $btn.attr('aria-selected', 'true').addClass('active');
-            $($btn.attr('aria-controls')).removeClass('hidden');
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('[data-modal-target]');
+        if (trigger) {
+            e.preventDefault();
+            openModal(trigger.dataset.modalTarget);
         }
 
-        $buttons.on('click', function() { activateTab($(this)); });
-        $buttons.on('keydown', function(e) {
-            const idx = $buttons.index(this);
-            if (e.key === 'ArrowRight') { e.preventDefault(); $buttons.eq((idx + 1) % $buttons.length).focus().click(); }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); $buttons.eq((idx - 1 + $buttons.length) % $buttons.length).focus().click(); }
+        const closeBtn = e.target.closest('[data-modal-close]');
+        if (closeBtn) {
+            closeModal(closeBtn.closest('.fixed'));
+        }
+
+        if (e.target.classList.contains('modal-overlay')) {
+            closeModal(e.target.closest('.fixed'));
+        }
+    });
+
+    /* ========== TABS ========== */
+    $$('.glass-tabs').forEach(tabGroup => {
+        const buttons = $$('[role="tab"]', tabGroup);
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Deactivate all
+                buttons.forEach(b => {
+                    b.setAttribute('aria-selected', 'false');
+                    b.classList.remove('active');
+                    const panel = $(b.getAttribute('aria-controls'));
+                    if (panel) panel.classList.add('hidden');
+                });
+
+                // Activate clicked
+                btn.setAttribute('aria-selected', 'true');
+                btn.classList.add('active');
+                const targetPanel = $(btn.getAttribute('aria-controls'));
+                if (targetPanel) targetPanel.classList.remove('hidden');
+            });
+
+            // Keyboard Nav
+            btn.addEventListener('keydown', (e) => {
+                const idx = buttons.indexOf(btn);
+                let nextIdx = -1;
+
+                if (e.key === 'ArrowRight') nextIdx = (idx + 1) % buttons.length;
+                if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + buttons.length) % buttons.length;
+
+                if (nextIdx !== -1) {
+                    e.preventDefault();
+                    buttons[nextIdx].focus();
+                    buttons[nextIdx].click();
+                }
+            });
         });
     });
 
     /* ========== ACCORDION ========== */
-    $(document).on('click', '.glass-accordion-trigger', function() {
-        const $item = $(this).closest('.glass-accordion-item');
-        const $content = $item.find('.glass-accordion-content');
-        const isOpen = $item.hasClass('open');
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('.glass-accordion-trigger');
+        if (!trigger) return;
 
-        // Close others (single open mode)
-        if (!$item.closest('.glass-accordion').hasClass('multi')) {
-            $item.siblings().removeClass('open').find('.glass-accordion-content').slideUp(300);
+        const item = trigger.closest('.glass-accordion-item');
+        const content = $('.glass-accordion-content', item);
+        const parent = item.closest('.glass-accordion');
+        const isOpen = item.classList.contains('open');
+
+        // Close others if not multi-select
+        if (parent && !parent.classList.contains('multi')) {
+            $$('.glass-accordion-item.open', parent).forEach(sibling => {
+                if (sibling !== item) {
+                    sibling.classList.remove('open');
+                    // Reset inline styles for slideUp
+                    const sibContent = $('.glass-accordion-content', sibling);
+                    sibContent.style.maxHeight = null;
+                }
+            });
         }
 
         if (isOpen) {
-            $item.removeClass('open');
-            $content.slideUp(300);
+            item.classList.remove('open');
+            content.style.maxHeight = null;
         } else {
-            $item.addClass('open');
-            $content.slideDown(300);
+            item.classList.add('open');
+            content.style.maxHeight = content.scrollHeight + "px";
         }
     });
 
     /* ========== SMOOTH SCROLL ========== */
-    $(document).on('click', 'a[href^="#"]', function(e) {
-        const target = $(this.getAttribute('href'));
-        if (target.length) {
-            e.preventDefault();
-            $('html, body').animate({ scrollTop: target.offset().top - 80 }, 500);
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="#"]');
+        if (link) {
+            const targetId = link.getAttribute('href');
+            const target = $(targetId);
+            if (target) {
+                e.preventDefault();
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
         }
     });
 
     /* ========== SCROLL REVEAL ========== */
-    const $revealElements = $('[data-reveal]');
-    function checkReveal() {
-        const windowHeight = $(window).height();
-        const scrollTop = $(window).scrollTop();
-        
-        $revealElements.each(function() {
-            const $el = $(this);
-            const elTop = $el.offset().top;
-            const delay = $el.data('reveal-delay') || 0;
-            
-            if (scrollTop + windowHeight > elTop + 50) {
-                setTimeout(() => $el.addClass('revealed'), delay);
+    const revealElements = $$('[data-reveal]');
+    const checkReveal = () => {
+        const triggerBottom = window.innerHeight * 0.85;
+        revealElements.forEach(el => {
+            const boxTop = el.getBoundingClientRect().top;
+            if (boxTop < triggerBottom) {
+                const delay = el.dataset.revealDelay || 0;
+                setTimeout(() => el.classList.add('revealed'), delay);
             }
         });
-    }
-    $(window).on('scroll load', checkReveal);
+    };
+    window.addEventListener('scroll', checkReveal);
+    window.addEventListener('load', checkReveal);
 
-    /* ========== LAZY LOAD IMAGES ========== */
+    /* ========== LAZY LOAD ========== */
     if ('IntersectionObserver' in window) {
-        const lazyObserver = new IntersectionObserver((entries) => {
+        const lazyObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const $img = $(entry.target);
-                    $img.attr('src', $img.data('src')).removeAttr('data-src');
-                    lazyObserver.unobserve(entry.target);
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    observer.unobserve(img);
                 }
             });
         }, { rootMargin: '50px' });
         
-        $('img[data-src]').each(function() { lazyObserver.observe(this); });
+        $$('img[data-src]').forEach(img => lazyObserver.observe(img));
     }
 
     /* ========== RIPPLE EFFECT ========== */
-    $(document).on('click', '.ripple', function(e) {
-        const $btn = $(this);
-        const $ripple = $('<span class="ripple-effect"></span>');
-        const btnOffset = $btn.offset();
-        const x = e.pageX - btnOffset.left;
-        const y = e.pageY - btnOffset.top;
-        
-        $ripple.css({ left: x, top: y });
-        $btn.append($ripple);
-        setTimeout(() => $ripple.remove(), 600);
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.ripple');
+        if (btn) {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const circle = document.createElement('span');
+            circle.classList.add('ripple-effect');
+            circle.style.left = `${x}px`;
+            circle.style.top = `${y}px`;
+            
+            btn.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        }
     });
 
     /* ========== COUNTER ANIMATION ========== */
-    $('[data-counter]').each(function() {
-        const $el = $(this);
-        const target = parseInt($el.data('counter'));
-        const duration = $el.data('counter-duration') || 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                const interval = setInterval(() => {
+    const counters = $$('[data-counter]');
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.counter);
+                const duration = parseInt(el.dataset.counterDuration) || 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
                     current += step;
-                    if (current >= target) { current = target; clearInterval(interval); }
-                    $el.text(Math.floor(current).toLocaleString());
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    el.textContent = Math.floor(current).toLocaleString();
                 }, 16);
-                observer.unobserve($el[0]);
+                
+                observer.unobserve(el);
             }
         });
-        observer.observe($el[0]);
     });
+    counters.forEach(c => counterObserver.observe(c));
 
-    /* ========== PARALLAX EFFECT ========== */
-    $(window).on('scroll', function() {
-        const scrolled = $(this).scrollTop();
-        $('[data-parallax]').each(function() {
-            const $el = $(this);
-            const speed = $el.data('parallax') || 0.5;
-            $el.css('transform', `translateY(${scrolled * speed}px)`);
+    /* ========== PARALLAX ========== */
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        $$('[data-parallax]').forEach(el => {
+            const speed = el.dataset.parallax || 0.5;
+            el.style.transform = `translateY(${scrolled * speed}px)`;
         });
     });
 });
 
 /* ========== TOAST NOTIFICATION HELPER ========== */
-function showToast(message, type = 'success', duration = 3000) {
-    let $container = $('.toast-container');
-    if (!$container.length) { $('body').append('<div class="toast-container"></div>'); $container = $('.toast-container'); }
+window.showToast = (message, type = 'success', duration = 3000) => {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
     
-    const icon = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' }[type] || 'fa-circle-info';
-    const $toast = $(`<div class="toast ${type}"><i class="fa-solid ${icon}"></i> ${message}</div>`);
-    $container.append($toast);
+    const iconMap = {
+        success: 'fa-circle-check',
+        error: 'fa-circle-xmark',
+        warning: 'fa-triangle-exclamation',
+        info: 'fa-circle-info'
+    };
+    const iconClass = iconMap[type] || iconMap.info;
     
-    setTimeout(() => { $toast.css({ opacity: 0, transform: 'translateX(100%)' }); setTimeout(() => $toast.remove(), 300); }, duration);
-}
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${message}`;
+    
+    container.appendChild(toast);
+    
+    // Trigger reflow for transition
+    void toast.offsetWidth; 
+    
+    // No specific enter animation class needed if CSS handles it via keyframes or default state
+    // But let's assume CSS has animation: toast-slide-in
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+};
 ```
 
 ---
@@ -1088,7 +1269,7 @@ function showToast(message, type = 'success', duration = 3000) {
 | Color Palette (CSS Variables) | ✅ |
 | Card Components | ✅ |
 | Button System | ✅ |
-| Dropdown (ARIA + Keyboard) | ✅ |
+| Dropdown (Vanilla JS + ARIA) | ✅ |
 | Modal (Focus Trap) | ✅ |
 | Tabs (Accessible) | ✅ |
 | Accordion | ✅ |
@@ -1100,3 +1281,4 @@ function showToast(message, type = 'success', duration = 3000) {
 | Ripple Effect | ✅ |
 | Counter Animation | ✅ |
 | Gradient Animations | ✅ |
+
