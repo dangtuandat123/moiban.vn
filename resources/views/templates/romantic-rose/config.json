@@ -1,0 +1,181 @@
+{
+    "name": "Romantic Rose",
+    "slug": "romantic-rose",
+    "description": "Mẫu thiệp hồng pastel lãng mạn, phù hợp cho đám cưới truyền thống",
+    "type": "basic",
+    "version": "1.0.0",
+    "author": "moiban.vn",
+    "theme": {
+        "primary_color": "#b76e79",
+        "secondary_color": "#f7e7ce",
+        "background_gradient": [
+            "#fdf2f8",
+            "#fce7f3"
+        ],
+        "text_color": "#4a3f35",
+        "font_heading": "Great Vibes",
+        "font_body": "Be Vietnam Pro"
+    },
+    "fields": {
+        "couple": {
+            "groom_name": {
+                "type": "text",
+                "label": "Tên chú rể",
+                "placeholder": "Minh Anh",
+                "required": true,
+                "max_length": 50
+            },
+            "bride_name": {
+                "type": "text",
+                "label": "Tên cô dâu",
+                "placeholder": "Thùy Linh",
+                "required": true,
+                "max_length": 50
+            },
+            "couple_message": {
+                "type": "textarea",
+                "label": "Lời chào mừng",
+                "placeholder": "Cảm ơn bạn đã ghé thăm thiệp cưới của chúng tôi...",
+                "required": false,
+                "max_length": 500
+            }
+        },
+        "event": {
+            "event_date": {
+                "type": "date",
+                "label": "Ngày cưới",
+                "required": true
+            },
+            "event_time": {
+                "type": "time",
+                "label": "Giờ làm lễ",
+                "default": "10:00"
+            },
+            "venue_name": {
+                "type": "text",
+                "label": "Tên địa điểm",
+                "placeholder": "Trung tâm Hội nghị ABC",
+                "required": true
+            },
+            "venue_address": {
+                "type": "text",
+                "label": "Địa chỉ",
+                "placeholder": "123 Đường ABC, Quận 1, TP.HCM"
+            },
+            "event_message": {
+                "type": "textarea",
+                "label": "Lời mời",
+                "placeholder": "Trân trọng kính mời quý khách...",
+                "max_length": 300
+            }
+        },
+        "parents": {
+            "groom_father": {
+                "type": "text",
+                "label": "Họ tên cha chú rể"
+            },
+            "groom_mother": {
+                "type": "text",
+                "label": "Họ tên mẹ chú rể"
+            },
+            "bride_father": {
+                "type": "text",
+                "label": "Họ tên cha cô dâu"
+            },
+            "bride_mother": {
+                "type": "text",
+                "label": "Họ tên mẹ cô dâu"
+            }
+        },
+        "style": {
+            "primary_color": {
+                "type": "color",
+                "label": "Màu chủ đạo",
+                "default": "#b76e79"
+            },
+            "background_image": {
+                "type": "image",
+                "label": "Ảnh nền",
+                "accept": "image/*"
+            }
+        }
+    },
+    "widgets": {
+        "countdown": {
+            "enabled": true,
+            "position": 1
+        },
+        "album": {
+            "enabled": true,
+            "position": 2,
+            "max_images": 20
+        },
+        "rsvp": {
+            "enabled": true,
+            "position": 3
+        },
+        "guestbook": {
+            "enabled": true,
+            "position": 4
+        },
+        "maps": {
+            "enabled": true,
+            "position": 5
+        },
+        "music": {
+            "enabled": false,
+            "position": 6
+        },
+        "vietqr": {
+            "enabled": false,
+            "position": 7
+        }
+    },
+    "sections": [
+        {
+            "id": "hero",
+            "name": "Trang bìa",
+            "required": true
+        },
+        {
+            "id": "couple",
+            "name": "Cô dâu & Chú rể",
+            "required": true
+        },
+        {
+            "id": "event",
+            "name": "Thông tin sự kiện",
+            "required": true
+        },
+        {
+            "id": "countdown",
+            "name": "Đếm ngược",
+            "required": false
+        },
+        {
+            "id": "album",
+            "name": "Album ảnh",
+            "required": false
+        },
+        {
+            "id": "rsvp",
+            "name": "Xác nhận tham dự",
+            "required": false
+        },
+        {
+            "id": "guestbook",
+            "name": "Sổ lưu bút",
+            "required": false
+        },
+        {
+            "id": "maps",
+            "name": "Bản đồ",
+            "required": false
+        },
+        {
+            "id": "footer",
+            "name": "Chân trang",
+            "required": true
+        }
+    ]
+}

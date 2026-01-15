@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\TelegramService;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +15,8 @@ use Illuminate\Support\Facades\Log;
 class InternalWalletController extends Controller
 {
     public function __construct(
-        private WalletService $walletService
+        private WalletService $walletService,
+        private TelegramService $telegramService
     ) {}
 
     /**
@@ -33,6 +36,15 @@ class InternalWalletController extends Controller
                 $validated['user_id'],
                 $validated['amount'],
                 $validated['reference']
+            );
+
+            $user = User::find($validated['user_id']);
+
+            // Thông báo Telegram
+            $this->telegramService->notifyDeposit(
+                $user,
+                $validated['amount'],
+                $transaction->balance_after
             );
 
             Log::info('Deposit API success', [

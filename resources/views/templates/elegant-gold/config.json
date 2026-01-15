@@ -1,0 +1,149 @@
+{
+    "name": "Elegant Gold",
+    "slug": "elegant-gold",
+    "description": "Mẫu thiệp sang trọng với điểm nhấn vàng gold, hiệu ứng parallax",
+    "type": "premium",
+    "version": "1.0.0",
+    "author": "moiban.vn",
+    "theme": {
+        "primary_color": "#d4af37",
+        "secondary_color": "#1a1a1a",
+        "background_gradient": [
+            "#1a1a1a",
+            "#2d2d2d"
+        ],
+        "text_color": "#fffef5",
+        "font_heading": "Cormorant Garamond",
+        "font_body": "Montserrat"
+    },
+    "fields": {
+        "couple": {
+            "groom_name": {
+                "type": "text",
+                "label": "Tên chú rể",
+                "placeholder": "Minh Anh",
+                "required": true,
+                "max_length": 50
+            },
+            "bride_name": {
+                "type": "text",
+                "label": "Tên cô dâu",
+                "placeholder": "Thùy Linh",
+                "required": true,
+                "max_length": 50
+            },
+            "couple_message": {
+                "type": "textarea",
+                "label": "Lời chào mừng",
+                "required": false,
+                "max_length": 500
+            }
+        },
+        "event": {
+            "event_date": {
+                "type": "date",
+                "label": "Ngày cưới",
+                "required": true
+            },
+            "event_time": {
+                "type": "time",
+                "label": "Giờ làm lễ",
+                "default": "18:00"
+            },
+            "venue_name": {
+                "type": "text",
+                "label": "Tên địa điểm",
+                "required": true
+            },
+            "venue_address": {
+                "type": "text",
+                "label": "Địa chỉ"
+            },
+            "event_message": {
+                "type": "textarea",
+                "label": "Lời mời",
+                "max_length": 300
+            }
+        },
+        "style": {
+            "primary_color": {
+                "type": "color",
+                "label": "Màu vàng gold",
+                "default": "#d4af37"
+            },
+            "background_color": {
+                "type": "color",
+                "label": "Màu nền",
+                "default": "#1a1a1a"
+            }
+        }
+    },
+    "widgets": {
+        "countdown": {
+            "enabled": true,
+            "position": 1
+        },
+        "album": {
+            "enabled": true,
+            "position": 2,
+            "max_images": 30
+        },
+        "rsvp": {
+            "enabled": true,
+            "position": 3
+        },
+        "guestbook": {
+            "enabled": true,
+            "position": 4
+        },
+        "maps": {
+            "enabled": true,
+            "position": 5
+        },
+        "music": {
+            "enabled": true,
+            "position": 6
+        },
+        "vietqr": {
+            "enabled": true,
+            "position": 7
+        }
+    },
+    "sections": [
+        {
+            "id": "hero",
+            "name": "Trang bìa",
+            "required": true
+        },
+        {
+            "id": "countdown",
+            "name": "Đếm ngược",
+            "required": false
+        },
+        {
+            "id": "event",
+            "name": "Thông tin sự kiện",
+            "required": true
+        },
+        {
+            "id": "rsvp",
+            "name": "Xác nhận tham dự",
+            "required": false
+        },
+        {
+            "id": "guestbook",
+            "name": "Sổ lưu bút",
+            "required": false
+        },
+        {
+            "id": "footer",
+            "name": "Chân trang",
+            "required": true
+        }
+    ],
+    "features": {
+        "parallax": true,
+        "animations": true,
+        "dark_mode": true
+    }
+}

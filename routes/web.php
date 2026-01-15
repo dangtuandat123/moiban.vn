@@ -88,6 +88,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // PUBLIC INVITATION VIEW (moiban.vn/{slug})
 // =========================================================================
 
+// OG Image cho Social Sharing
+Route::get('/og-image/{slug}', [\App\Http\Controllers\OgImageController::class, 'show'])->name('og-image');
+Route::get('/og-image/{slug}/png', [\App\Http\Controllers\OgImageController::class, 'generatePng'])->name('og-image.png');
+
 // Trang thiệp bị khóa
 Route::get('/locked/{slug}', [\App\Http\Controllers\Public\InvitationController::class, 'locked'])->name('invitation.locked');
 Route::get('/expired/{slug}', [\App\Http\Controllers\Public\InvitationController::class, 'expired'])->name('invitation.expired');

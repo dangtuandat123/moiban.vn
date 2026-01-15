@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Models\Template;
 use App\Services\InvitationService;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 /**
@@ -14,7 +15,8 @@ use Illuminate\Http\Request;
 class InvitationController extends Controller
 {
     public function __construct(
-        private InvitationService $invitationService
+        private InvitationService $invitationService,
+        private TelegramService $telegramService
     ) {}
 
     /**
@@ -68,6 +70,9 @@ class InvitationController extends Controller
             $template,
             $validated
         );
+
+        // Thông báo Telegram
+        $this->telegramService->notifyNewInvitation($request->user(), $invitation);
 
         return redirect()
             ->route('user.invitations.editor', $invitation)

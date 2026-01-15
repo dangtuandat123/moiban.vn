@@ -1,0 +1,136 @@
+{
+    "name": "Modern Minimal",
+    "slug": "modern-minimal",
+    "description": "Mẫu thiệp hiện đại, tối giản, animations mượt mà",
+    "type": "premium",
+    "version": "1.0.0",
+    "author": "moiban.vn",
+    "theme": {
+        "primary_color": "#2d3436",
+        "secondary_color": "#dfe6e9",
+        "background_gradient": [
+            "#fafafa",
+            "#ffffff"
+        ],
+        "text_color": "#2d3436",
+        "font_heading": "Playfair Display",
+        "font_body": "Inter"
+    },
+    "fields": {
+        "couple": {
+            "groom_name": {
+                "type": "text",
+                "label": "Tên chú rể",
+                "required": true,
+                "max_length": 50
+            },
+            "bride_name": {
+                "type": "text",
+                "label": "Tên cô dâu",
+                "required": true,
+                "max_length": 50
+            },
+            "couple_message": {
+                "type": "textarea",
+                "label": "Lời chào mừng",
+                "required": false
+            }
+        },
+        "event": {
+            "event_date": {
+                "type": "date",
+                "label": "Ngày cưới",
+                "required": true
+            },
+            "event_time": {
+                "type": "time",
+                "label": "Giờ làm lễ",
+                "default": "11:00"
+            },
+            "venue_name": {
+                "type": "text",
+                "label": "Tên địa điểm",
+                "required": true
+            },
+            "venue_address": {
+                "type": "text",
+                "label": "Địa chỉ"
+            }
+        },
+        "style": {
+            "accent_color": {
+                "type": "color",
+                "label": "Màu nhấn",
+                "default": "#2d3436"
+            }
+        }
+    },
+    "widgets": {
+        "countdown": {
+            "enabled": true,
+            "position": 1
+        },
+        "album": {
+            "enabled": true,
+            "position": 2,
+            "max_images": 30
+        },
+        "rsvp": {
+            "enabled": true,
+            "position": 3
+        },
+        "guestbook": {
+            "enabled": true,
+            "position": 4
+        },
+        "maps": {
+            "enabled": true,
+            "position": 5
+        },
+        "music": {
+            "enabled": true,
+            "position": 6
+        },
+        "vietqr": {
+            "enabled": true,
+            "position": 7
+        }
+    },
+    "sections": [
+        {
+            "id": "hero",
+            "name": "Trang bìa",
+            "required": true
+        },
+        {
+            "id": "countdown",
+            "name": "Đếm ngược",
+            "required": false
+        },
+        {
+            "id": "event",
+            "name": "Thông tin sự kiện",
+            "required": true
+        },
+        {
+            "id": "rsvp",
+            "name": "Xác nhận",
+            "required": false
+        },
+        {
+            "id": "guestbook",
+            "name": "Lời chúc",
+            "required": false
+        },
+        {
+            "id": "footer",
+            "name": "Chân trang",
+            "required": true
+        }
+    ],
+    "features": {
+        "minimal_design": true,
+        "animations": true,
+        "light_mode": true
+    }
+}
