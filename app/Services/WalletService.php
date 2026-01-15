@@ -83,6 +83,33 @@ class WalletService
     }
 
     /**
+     * Trừ tiền từ ví (cho mua gói)
+     */
+    public function deduct(User $user, int $amount, string $type = 'purchase', string $description = ''): WalletTransaction
+    {
+        return DB::transaction(function () use ($user, $amount, $type, $description) {
+            $wallet = $user->wallet;
+            
+            if (!$wallet || $wallet->balance < $amount) {
+                throw new \Exception('Số dư không đủ.');
+            }
+
+            // Trừ số dư
+            $wallet->decrement('balance', $amount);
+            $wallet->refresh();
+
+            // Ghi log giao dịch
+            return WalletTransaction::create([
+                'wallet_id' => $wallet->id,
+                'type' => $type,
+                'amount' => -$amount, // Số âm cho giao dịch trừ tiền
+                'balance_after' => $wallet->balance,
+                'description' => $description ?: 'Thanh toán',
+            ]);
+        });
+    }
+
+    /**
      * Generate VietQR URL cho user
      */
     public function generateVietQrUrl(User $user): string

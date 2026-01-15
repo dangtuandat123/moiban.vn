@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         // Khóa các thiệp trial hết hạn - chạy mỗi giờ
         $schedule->command('invitations:lock-expired')->hourly();
+
+        // Đánh dấu thiệp hết hạn subscription - chạy mỗi ngày lúc 1:00
+        $schedule->command('invitations:cleanup-expired')->dailyAt('01:00');
     }
 
     /**

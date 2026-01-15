@@ -444,10 +444,55 @@
                     <a href="{{ route('pricing') }}" class="nav-link">Bảng giá</a>
                     
                     @auth
-                        <a href="{{ route('user.dashboard') }}" class="nav-link">Dashboard</a>
                         <a href="{{ route('user.invitations.create') }}" class="glass-btn glass-btn-sm">
                             <i class="fa-solid fa-plus"></i> Tạo thiệp
                         </a>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative" id="user-dropdown">
+                            <button type="button" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/10 transition" id="user-dropdown-btn">
+                                <div class="w-8 h-8 rounded-full bg-primary-500/30 flex items-center justify-center">
+                                    <i class="fa-solid fa-user text-sm text-primary-400"></i>
+                                </div>
+                                <span class="text-sm">{{ Str::limit(Auth::user()->name, 12) }}</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-white/50"></i>
+                            </button>
+                            
+                            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 rounded-xl bg-slate-900/95 backdrop-blur border border-white/10 shadow-xl py-2 z-50">
+                                <div class="px-4 py-2 border-b border-white/10">
+                                    <p class="font-medium text-sm">{{ Auth::user()->name }}</p>
+                                    <p class="text-xs text-white/50">{{ Auth::user()->email }}</p>
+                                </div>
+                                
+                                <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/5 transition">
+                                    <i class="fa-solid fa-chart-pie w-4 text-white/50"></i> Dashboard
+                                </a>
+                                <a href="{{ route('user.invitations.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/5 transition">
+                                    <i class="fa-solid fa-envelope w-4 text-white/50"></i> Thiệp của tôi
+                                </a>
+                                <a href="{{ route('user.wallet') }}" class="flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/5 transition">
+                                    <i class="fa-solid fa-wallet w-4 text-white/50"></i> Ví ({{ number_format(Auth::user()->wallet->balance ?? 0, 0, ',', '.') }}đ)
+                                </a>
+                                <a href="{{ route('user.profile') }}" class="flex items-center gap-3 px-4 py-2 text-sm hover:bg-white/5 transition">
+                                    <i class="fa-solid fa-user-gear w-4 text-white/50"></i> Tài khoản
+                                </a>
+                                
+                                @if(Auth::user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-amber-400 hover:bg-white/5 transition">
+                                    <i class="fa-solid fa-shield w-4"></i> Admin Panel
+                                </a>
+                                @endif
+                                
+                                <div class="border-t border-white/10 mt-2 pt-2">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition w-full text-left">
+                                            <i class="fa-solid fa-sign-out-alt w-4"></i> Đăng xuất
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <a href="{{ route('login') }}" class="nav-link">Đăng nhập</a>
                         <a href="{{ route('register') }}" class="glass-btn glass-btn-sm">Đăng ký</a>
@@ -468,10 +513,35 @@
                 <a href="{{ route('templates') }}" class="block nav-link" role="menuitem">Mẫu thiệp</a>
                 <a href="{{ route('pricing') }}" class="block nav-link" role="menuitem">Bảng giá</a>
                 @auth
-                    <a href="{{ route('user.dashboard') }}" class="block nav-link" role="menuitem">Dashboard</a>
-                    <a href="{{ route('user.invitations.create') }}" class="block glass-btn glass-btn-full text-center" role="menuitem">
-                        <i class="fa-solid fa-plus"></i> Tạo thiệp
+                    <div class="border-t border-white/10 my-3 pt-3">
+                        <p class="text-xs text-white/40 uppercase tracking-wider mb-2">Tài khoản</p>
+                    </div>
+                    <a href="{{ route('user.dashboard') }}" class="block nav-link" role="menuitem">
+                        <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
                     </a>
+                    <a href="{{ route('user.invitations.index') }}" class="block nav-link" role="menuitem">
+                        <i class="fa-solid fa-envelope w-5"></i> Thiệp của tôi
+                    </a>
+                    <a href="{{ route('user.wallet') }}" class="block nav-link" role="menuitem">
+                        <i class="fa-solid fa-wallet w-5"></i> Ví ({{ number_format(Auth::user()->wallet->balance ?? 0, 0, ',', '.') }}đ)
+                    </a>
+                    <a href="{{ route('user.profile') }}" class="block nav-link" role="menuitem">
+                        <i class="fa-solid fa-user-gear w-5"></i> Tài khoản
+                    </a>
+                    @if(Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="block nav-link text-amber-400" role="menuitem">
+                        <i class="fa-solid fa-shield w-5"></i> Admin Panel
+                    </a>
+                    @endif
+                    <a href="{{ route('user.invitations.create') }}" class="block glass-btn glass-btn-full text-center mt-4" role="menuitem">
+                        <i class="fa-solid fa-plus"></i> Tạo thiệp mới
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                        @csrf
+                        <button type="submit" class="block nav-link text-red-400 w-full text-left">
+                            <i class="fa-solid fa-sign-out-alt w-5"></i> Đăng xuất
+                        </button>
+                    </form>
                 @else
                     <a href="{{ route('login') }}" class="block nav-link" role="menuitem">Đăng nhập</a>
                     <a href="{{ route('register') }}" class="block glass-btn glass-btn-full text-center" role="menuitem">Đăng ký</a>
@@ -541,11 +611,32 @@
                 $menuBtn.attr('aria-expanded', !isExpanded);
             });
             
-            // Close menu on escape
+            // User dropdown toggle
+            const $dropdownBtn = $('#user-dropdown-btn');
+            const $dropdownMenu = $('#user-dropdown-menu');
+            
+            $dropdownBtn.on('click', function(e) {
+                e.stopPropagation();
+                $dropdownMenu.toggleClass('hidden');
+            });
+            
+            // Close dropdown on click outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#user-dropdown').length) {
+                    $dropdownMenu.addClass('hidden');
+                }
+            });
+            
+            // Close menu and dropdown on escape
             $(document).on('keydown', function(e) {
-                if (e.key === 'Escape' && !$menu.hasClass('hidden')) {
-                    $menu.addClass('hidden');
-                    $menuBtn.attr('aria-expanded', 'false').focus();
+                if (e.key === 'Escape') {
+                    if (!$menu.hasClass('hidden')) {
+                        $menu.addClass('hidden');
+                        $menuBtn.attr('aria-expanded', 'false').focus();
+                    }
+                    if (!$dropdownMenu.hasClass('hidden')) {
+                        $dropdownMenu.addClass('hidden');
+                    }
                 }
             });
         });

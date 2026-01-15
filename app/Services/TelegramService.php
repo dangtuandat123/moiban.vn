@@ -102,13 +102,23 @@ class TelegramService
     /**
      * Thông báo mua gói thành công
      */
-    public function notifyPurchase(User $user, Invitation $invitation, int $amount): bool
+    public function notifyPurchase(User $user, Invitation $invitation, $package): bool
     {
+        // Xử lý cả Package object và int
+        if (is_object($package)) {
+            $packageName = $package->name;
+            $amount = $package->price;
+        } else {
+            $packageName = 'N/A';
+            $amount = $package;
+        }
+
         $formattedAmount = number_format($amount, 0, ',', '.');
 
         $message = "🛒 <b>Mua gói thành công</b>\n\n"
             . "👤 <b>User:</b> {$user->name} (#{$user->id})\n"
             . "💌 <b>Thiệp:</b> {$invitation->title}\n"
+            . "📦 <b>Gói:</b> {$packageName}\n"
             . "💵 <b>Số tiền:</b> {$formattedAmount} VND\n"
             . "🕐 <b>Thời gian:</b> " . now()->format('d/m/Y H:i');
 
