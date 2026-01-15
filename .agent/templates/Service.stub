@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\{{ModelName}};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
+
+class {{ModelName}}Service
+{
+    /**
+     * Create a new {{modelName}}.
+     *
+     * @param array $data
+     * @return {{ModelName}}
+     * @throws Exception
+     */
+    public function create(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+            try {
+                $record = {{ModelName}}::create($data);
+                
+                // TODO: Add additional logic here (e.g., events, notifications)
+                
+                Log::info('{{ModelName}} created successfully', ['id' => $record->id]);
+                
+                return $record;
+            } catch (Exception $e) {
+                Log::error('Failed to create {{ModelName}}', [
+                    'error' => $e->getMessage(),
+                    'data' => $data
+                ]);
+                throw $e;
+            }
+        });
+    }
+
+    // TODO: Add other business logic methods
+}

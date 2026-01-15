@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\{{ModelName}}Request;
+use App\Services\{{ModelName}}Service;
+use App\Http\Resources\{{ModelName}}Resource;
+use Illuminate\Http\JsonResponse;
+use Exception;
+
+class {{ModelName}}Controller extends Controller
+{
+    protected ${{modelName}}Service;
+
+    public function __construct({{ModelName}}Service ${{modelName}}Service)
+    {
+        $this->{{modelName}}Service = ${{modelName}}Service;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{ModelName}}Request $request): JsonResponse
+    {
+        try {
+            $result = $this->{{modelName}}Service->create($request->validated());
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => new {{ModelName}}Resource($result),
+                'message' => '{{ModelName}} created successfully'
+            ], 201);
+            
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+}
