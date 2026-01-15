@@ -131,15 +131,35 @@ class TemplateService
     public function renderInvitation(\App\Models\Invitation $invitation): \Illuminate\Contracts\View\View
     {
         $template = $invitation->template;
-        $viewPath = storage_path("app/{$template->folder_path}");
-
-        // Đăng ký namespace cho blade
-        View::addNamespace('invitation_' . $template->slug, $viewPath);
-
+        
         // Lấy widgets đã enable
         $widgets = $invitation->widgets()->enabled()->get()->keyBy('widget_type');
 
-        return view("invitation_{$template->slug}::view", [
+        // Kiểm tra xem template có trong resources/views/templates không
+        $resourceViewPath = resource_path("views/templates/{$template->slug}/view.blade.php");
+        if (File::exists($resourceViewPath)) {
+            return view("templates.{$template->slug}.view", [
+                'invitation' => $invitation,
+                'content' => $invitation->content ?? [],
+                'widgets' => $widgets,
+                'template' => $template,
+            ]);
+        }
+
+        // Nếu template nằm trong storage
+        $viewPath = storage_path("app/{$template->folder_path}");
+        if (File::exists($viewPath . '/view.blade.php')) {
+            View::addNamespace('invitation_' . $template->slug, $viewPath);
+            return view("invitation_{$template->slug}::view", [
+                'invitation' => $invitation,
+                'content' => $invitation->content ?? [],
+                'widgets' => $widgets,
+                'template' => $template,
+            ]);
+        }
+
+        // Fallback: sử dụng template mặc định
+        return view("templates.romantic-rose.view", [
             'invitation' => $invitation,
             'content' => $invitation->content ?? [],
             'widgets' => $widgets,

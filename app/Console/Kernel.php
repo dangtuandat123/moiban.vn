@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Khóa các thiệp trial hết hạn - chạy mỗi giờ
+        $schedule->command('invitations:lock-expired')->hourly();
     }
 
     /**

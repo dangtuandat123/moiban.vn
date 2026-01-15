@@ -147,8 +147,23 @@
         <div class="grid md:grid-cols-3 gap-6">
             @foreach($templates->take(3) as $template)
             <div class="glass-card overflow-hidden group">
-                <div class="aspect-[3/4] bg-gradient-to-br from-rose-gold/20 to-purple-500/20 flex items-center justify-center">
-                    <i class="fa-solid fa-image text-4xl text-white/20"></i>
+                <div class="aspect-[3/4] bg-gradient-to-br from-rose-gold/20 to-purple-500/20 relative overflow-hidden">
+                    @php
+                        $thumbnailPath = 'images/templates/' . $template->slug . '.png';
+                    @endphp
+                    @if(file_exists(public_path($thumbnailPath)))
+                        <img src="{{ asset($thumbnailPath) }}" alt="{{ $template->name }}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="fa-solid fa-image text-4xl text-white/20"></i>
+                        </div>
+                    @endif
+                    
+                    <!-- Overlay on hover -->
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                        <a href="{{ route('register') }}" class="glass-btn">Sử dụng mẫu này</a>
+                    </div>
                 </div>
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-2">
