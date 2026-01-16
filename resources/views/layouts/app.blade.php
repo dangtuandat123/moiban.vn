@@ -24,6 +24,10 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
     <style>
         :root {
             /* ========== COLOR PALETTE SYSTEM ========== */
@@ -419,6 +423,152 @@
         
         .hidden-desktop { display: block; }
         @media (min-width: 768px) { .hidden-desktop { display: none; } }
+
+        /* ========== SELECT2 GLASSMORPHISM ========== */
+        .select2-container { width: 100% !important; }
+        
+        .select2-container--default .select2-selection--single {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid var(--color-border-subtle) !important;
+            border-radius: var(--radius-xl) !important;
+            height: 50px !important;
+            display: flex !important;
+            align-items: center !important;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+        }
+        
+        .select2-container--default .select2-selection--single:hover,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            background: var(--color-surface-glass-hover) !important;
+            border-color: var(--color-primary-500) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--color-text-primary) !important;
+            padding-left: var(--space-5) !important;
+            font-size: var(--text-base) !important;
+            font-family: var(--font-default) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 48px !important;
+            right: var(--space-4) !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: var(--color-text-muted) transparent transparent transparent !important;
+        }
+
+        .select2-dropdown {
+            background: var(--color-surface-elevated) !important;
+            border: 1px solid var(--color-border-subtle) !important;
+            border-radius: var(--radius-xl) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-xl) !important;
+            overflow: hidden !important;
+            z-index: var(--z-dropdown) !important;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid var(--color-border-subtle) !important;
+            border-radius: var(--radius-md) !important;
+            color: var(--color-text-primary) !important;
+            padding: var(--space-2) var(--space-3) !important;
+        }
+
+        .select2-results__option {
+            padding: var(--space-3) var(--space-5) !important;
+            color: var(--color-text-secondary) !important;
+            font-size: var(--text-base) !important;
+        }
+
+        .select2-results__option--highlighted[aria-selected] {
+            background: var(--color-primary-600) !important;
+            color: white !important;
+        }
+
+        .select2-results__option[aria-selected="true"] {
+            background: rgba(183, 110, 121, 0.2) !important;
+            color: var(--color-text-primary) !important;
+        }
+
+        /* ========== HELP FLOATING BUTTON ========== */
+        .help-float-btn {
+            position: fixed;
+            bottom: var(--space-4);
+            right: var(--space-4);
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            border: none;
+            border-radius: var(--radius-full);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(6,182,212,0.4);
+            z-index: var(--z-sticky-nav);
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .help-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(6,182,212,0.5);
+        }
+        @media (min-width: 768px) {
+            .help-float-btn {
+                bottom: var(--space-6);
+                right: var(--space-6);
+            }
+        }
+
+        /* ========== LOWTECH USER FRIENDLY ========== */
+        /* Bigger touch targets */
+        .touch-target-lg {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-4);
+            background: rgba(183,110,121,0.1);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-4);
+        }
+        .step-indicator-badge {
+            background: var(--color-primary-500);
+            color: white;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: var(--text-xs);
+        }
+
+        /* Tooltip helper */
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            margin-left: var(--space-1);
+            font-size: 0.65rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-full);
+            cursor: help;
+            vertical-align: middle;
+        }
+        .tooltip-icon:hover {
+            background: var(--color-primary-500);
+        }
     </style>
     
     @stack('styles')
@@ -573,17 +723,17 @@
                 <div>
                     <h4 class="font-semibold mb-4">Hỗ trợ</h4>
                     <ul class="space-y-2 text-sm text-white/60">
-                        <li><a href="#" class="hover:text-white transition">Hướng dẫn</a></li>
-                        <li><a href="#" class="hover:text-white transition">Liên hệ</a></li>
+                        <li><a href="https://zalo.me/0901234567" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-zalo mr-1"></i>Chat Zalo</a></li>
+                        <li><a href="tel:0901234567" class="hover:text-white transition"><i class="fa-solid fa-phone mr-1"></i>0901 234 567</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4">Kết nối</h4>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-white/60 hover:text-white transition" aria-label="Facebook">
+                        <a href="https://facebook.com/moiban.vn" target="_blank" class="text-white/60 hover:text-white transition" aria-label="Facebook">
                             <i class="fa-brands fa-facebook text-xl"></i>
                         </a>
-                        <a href="#" class="text-white/60 hover:text-white transition" aria-label="Instagram">
+                        <a href="https://instagram.com/moiban.vn" target="_blank" class="text-white/60 hover:text-white transition" aria-label="Instagram">
                             <i class="fa-brands fa-instagram text-xl"></i>
                         </a>
                     </div>
@@ -597,6 +747,14 @@
     
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container" role="alert" aria-live="polite"></div>
+    
+    <!-- Help Floating Button -->
+    @auth
+    <a href="https://zalo.me/0901234567" target="_blank" class="help-float-btn" title="Cần hỗ trợ? Chat Zalo">
+        <i class="fa-solid fa-headset"></i>
+    </a>
+    @endauth
+
     
     <!-- Scripts -->
     <script>

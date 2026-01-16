@@ -69,11 +69,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    // User Management
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    // User Management (chỉ index, show, destroy)
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'show', 'destroy']);
 
-    // Invitation Management
-    Route::resource('invitations', \App\Http\Controllers\Admin\InvitationController::class);
+    // Invitation Management (chỉ index, show, destroy)
+    Route::resource('invitations', \App\Http\Controllers\Admin\InvitationController::class)->only(['index', 'show', 'destroy']);
     Route::post('/invitations/{invitation}/lock', [\App\Http\Controllers\Admin\InvitationController::class, 'lock'])->name('invitations.lock');
     Route::post('/invitations/{invitation}/unlock', [\App\Http\Controllers\Admin\InvitationController::class, 'unlock'])->name('invitations.unlock');
 

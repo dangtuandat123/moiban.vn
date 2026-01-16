@@ -93,7 +93,7 @@
                                     <i class="fa-solid fa-eye text-blue-400"></i>
                                 </div>
                                 <div>
-                                    <p class="font-semibold">{{ number_format($invitation->views_count) }}</p>
+                                    <p class="font-semibold">{{ number_format($invitation->view_count) }}</p>
                                     <p class="text-xs text-white/50">Lượt xem</p>
                                 </div>
                             </div>
