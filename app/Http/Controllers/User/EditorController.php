@@ -67,4 +67,67 @@ class EditorController extends Controller
 
         return back()->with('success', 'Đã lưu thay đổi.');
     }
+
+    /**
+     * Upload ảnh album
+     */
+    public function uploadPhoto(Request $request, Invitation $invitation)
+    {
+        $this->authorize('update', $invitation);
+
+        $request->validate([
+            'photo' => ['required', 'image', 'max:5120'], // Max 5MB
+        ]);
+
+        // Lưu file vào storage
+        $path = $request->file('photo')->store(
+            "invitations/{$invitation->id}/album",
+            'public'
+        );
+
+        // Lấy URL công khai
+        $url = asset('storage/' . $path);
+
+        // Thêm vào album_photos trong content
+        $content = $invitation->content ?? [];
+        $albumPhotos = $content['album_photos'] ?? [];
+        $albumPhotos[] = $url;
+        $content['album_photos'] = $albumPhotos;
+
+        $invitation->update(['content' => $content]);
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'path' => $path,
+        ]);
+    }
+
+    /**
+     * Xóa ảnh album
+     */
+    public function deletePhoto(Request $request, Invitation $invitation)
+    {
+        $this->authorize('update', $invitation);
+
+        $request->validate([
+            'url' => ['required', 'string'],
+        ]);
+
+        $urlToDelete = $request->input('url');
+
+        // Xóa khỏi content
+        $content = $invitation->content ?? [];
+        $albumPhotos = $content['album_photos'] ?? [];
+        $albumPhotos = array_values(array_filter($albumPhotos, fn($url) => $url !== $urlToDelete));
+        $content['album_photos'] = $albumPhotos;
+
+        $invitation->update(['content' => $content]);
+
+        // Xóa file từ storage (optional, có thể giữ lại)
+        $path = str_replace(asset('storage/'), '', $urlToDelete);
+        \Storage::disk('public')->delete($path);
+
+        return response()->json(['success' => true]);
+    }
 }

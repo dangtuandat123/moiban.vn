@@ -27,6 +27,7 @@ class InvitationController extends Controller
         $invitations = $request->user()
             ->invitations()
             ->with('template')
+            ->withCount(['rsvps', 'guestbookEntries'])
             ->latest()
             ->paginate(12);
 

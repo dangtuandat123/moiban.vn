@@ -33,12 +33,12 @@
                 <p class="font-semibold">{{ number_format($balance, 0, ',', '.') }} ₫</p>
             </div>
         </div>
-        <a href="{{ route('user.wallet.deposit') }}" class="text-sm text-rose-gold hover:underline">
+        <a href="{{ route('user.wallet.deposit') }}" class="text-sm text-primary-400 hover:underline">
             <i class="fa-solid fa-plus mr-1"></i> Nạp thêm
         </a>
     </div>
     
-    <form method="POST" action="{{ route('user.invitations.purchase.process', $invitation) }}">
+    <form method="POST" action="{{ route('user.invitations.purchase.process', $invitation) }}" onsubmit="return confirm('Xác nhận mua gói này? Số tiền sẽ được trừ từ ví của bạn.')">
         @csrf
         
         <!-- Package Selection -->
@@ -47,7 +47,7 @@
             <label class="cursor-pointer">
                 <input type="radio" name="package_id" value="{{ $package->id }}" 
                        class="hidden peer" {{ old('package_id') == $package->id ? 'checked' : '' }}>
-                <div class="glass-card p-6 peer-checked:ring-2 peer-checked:ring-rose-gold transition {{ $balance < $package->price ? 'opacity-50' : '' }}">
+                <div class="glass-card p-6 peer-checked:ring-2 peer-checked:ring-primary-500 transition {{ $balance < $package->price ? 'opacity-50' : '' }}">
                     <div class="flex items-start justify-between mb-4">
                         <div>
                             <h3 class="text-lg font-semibold">{{ $package->name }}</h3>

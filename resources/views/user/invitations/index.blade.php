@@ -25,6 +25,11 @@
         </div>
         
         <!-- Simple Filter - Easy to understand -->
+        @php
+            $activeCount = $invitations->where('status', 'active')->count();
+            $trialCount = $invitations->where('status', 'trial')->count();
+            $lockedCount = $invitations->where('status', 'locked')->count();
+        @endphp
         <div class="glass-card p-4 mb-6">
             <div class="flex flex-wrap items-center gap-2">
                 <span class="text-sm text-white/60 mr-2">Lọc theo:</span>
@@ -32,13 +37,13 @@
                     Tất cả ({{ $invitations->count() }})
                 </button>
                 <button class="filter-btn" data-filter="active">
-                    <i class="fa-solid fa-check-circle text-green-400"></i> Hoạt động
+                    <i class="fa-solid fa-check-circle text-green-400"></i> Hoạt động ({{ $activeCount }})
                 </button>
                 <button class="filter-btn" data-filter="trial">
-                    <i class="fa-solid fa-gift text-amber-400"></i> Dùng thử
+                    <i class="fa-solid fa-gift text-amber-400"></i> Dùng thử ({{ $trialCount }})
                 </button>
                 <button class="filter-btn" data-filter="locked">
-                    <i class="fa-solid fa-lock text-red-400"></i> Đã khóa
+                    <i class="fa-solid fa-lock text-red-400"></i> Đã khóa ({{ $lockedCount }})
                 </button>
             </div>
         </div>
@@ -131,6 +136,12 @@
                                 <i class="fa-solid fa-chart-bar"></i>
                                 <span>Thống kê</span>
                             </a>
+                            <button type="button" class="action-btn action-btn-ghost share-btn" 
+                                    data-url="{{ $invitation->public_url }}" 
+                                    data-title="{{ $invitation->title }}">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                <span>Chia sẻ</span>
+                            </button>
                             
                             @if($invitation->status === 'trial' || $invitation->status === 'locked')
                             <a href="{{ route('user.invitations.purchase', $invitation) }}" class="action-btn action-btn-warning ml-auto">
@@ -209,6 +220,7 @@
     /* Invitation Card */
     .invitation-card {
         transition: all 0.3s ease;
+        animation: fadeIn 0.3s ease;
     }
     .invitation-card:hover {
         transform: translateY(-2px);
@@ -216,6 +228,10 @@
     }
     .invitation-card.hidden {
         display: none;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     /* Action Buttons - Big touch targets */
@@ -297,6 +313,29 @@
                     $(this).addClass('hidden');
                 }
             });
+        });
+        
+        // Share functionality
+        $('.share-btn').on('click', function() {
+            const url = $(this).data('url');
+            const title = $(this).data('title');
+            
+            // Try Web Share API first (mobile friendly)
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: 'Mời bạn tham dự: ' + title,
+                    url: url
+                }).catch(() => {});
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('✅ Đã copy link thiệp!', 'success');
+                }).catch(() => {
+                    // Final fallback
+                    prompt('Copy link này:', url);
+                });
+            }
         });
     });
 </script>

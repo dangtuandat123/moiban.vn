@@ -15,6 +15,14 @@
                 <i class="fa-solid fa-cloud-check"></i>
                 <span>Đã lưu</span>
             </span>
+            <!-- Undo/Redo Buttons -->
+            <div class="toolbar-divider hidden md:block"></div>
+            <button type="button" id="undo-btn" class="toolbar-btn toolbar-btn-ghost toolbar-btn-icon hidden md:inline-flex" title="Hoàn tác (Ctrl+Z)" disabled>
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button type="button" id="redo-btn" class="toolbar-btn toolbar-btn-ghost toolbar-btn-icon hidden md:inline-flex" title="Làm lại (Ctrl+Y)" disabled>
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
         </div>
         <div class="toolbar-right">
             <a href="{{ $invitation->public_url }}" target="_blank" class="toolbar-btn toolbar-btn-secondary hidden md:inline-flex">
@@ -140,11 +148,17 @@
                             </div>
                             
                             <div class="album-grid" id="album-preview">
-                                @if(isset($invitation->content['album_photos']))
-                                    @foreach($invitation->content['album_photos'] as $index => $photo)
-                                    <div class="album-item" data-index="{{ $index }}">
+                                @php
+                                    $albumPhotos = $invitation->content['album_photos'] ?? [];
+                                    if (is_string($albumPhotos)) {
+                                        $albumPhotos = json_decode($albumPhotos, true) ?? [];
+                                    }
+                                @endphp
+                                @if(is_array($albumPhotos) && count($albumPhotos) > 0)
+                                    @foreach($albumPhotos as $index => $photo)
+                                    <div class="album-item" data-index="{{ $index }}" data-url="{{ $photo }}">
                                         <img src="{{ $photo }}" alt="Album photo">
-                                        <button type="button" class="album-item-remove" data-index="{{ $index }}">
+                                        <button type="button" class="album-item-remove" data-index="{{ $index }}" data-url="{{ $photo }}">
                                             <i class="fa-solid fa-times"></i>
                                         </button>
                                     </div>
@@ -152,7 +166,7 @@
                                 @endif
                             </div>
                             <input type="hidden" name="content[album_photos]" id="album-photos-data" 
-                                   value="{{ json_encode($invitation->content['album_photos'] ?? []) }}">
+                                   value="{{ json_encode($albumPhotos) }}">
                         </div>
                         
                         <!-- QR Mừng tiền -->
@@ -267,15 +281,16 @@
                                 <input type="url" name="content[music_url]" 
                                        value="{{ $invitation->content['music_url'] ?? '' }}"
                                        class="form-input" placeholder="https://youtube.com/watch?v=...">
-                                <p class="form-hint">Dán link video nhạc từ YouTube hoặc SoundCloud</p>
+                                <p class="form-hint">Dán link video nhạc từ YouTube. Ví dụ: nhạc đám cưới, nhạc không lời.</p>
                             </div>
                             
-                            <p class="form-label">Hoặc chọn nhạc có sẵn:</p>
-                            <div class="music-presets">
-                                <button type="button" class="music-preset" data-url="">💕 Tắt nhạc</button>
-                                <button type="button" class="music-preset" data-url="/audio/romantic.mp3">🎵 Romantic</button>
-                                <button type="button" class="music-preset" data-url="/audio/piano.mp3">🎹 Piano</button>
-                                <button type="button" class="music-preset" data-url="/audio/acoustic.mp3">🎸 Acoustic</button>
+                            <div class="flex items-center gap-2 mt-3">
+                                <button type="button" class="music-preset" onclick="$('input[name=\'content[music_url]\']').val('')">
+                                    <i class="fa-solid fa-volume-xmark"></i> Tắt nhạc
+                                </button>
+                                <a href="https://www.youtube.com/results?search_query=nhạc+đám+cưới+không+lời" target="_blank" class="text-sm text-primary-400 hover:underline">
+                                    <i class="fa-brands fa-youtube"></i> Tìm nhạc trên YouTube
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -366,6 +381,108 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // ========== UNDO/REDO HISTORY ==========
+    const maxHistorySize = 50;
+    let historyStack = [];
+    let historyIndex = -1;
+    let isRestoringState = false;
+    
+    // Get current form state as JSON
+    function getFormState() {
+        const formData = {};
+        $('#editor-form').find('input, select, textarea').each(function() {
+            const $el = $(this);
+            const name = $el.attr('name');
+            if (!name) return;
+            
+            if ($el.is(':checkbox')) {
+                formData[name] = $el.is(':checked');
+            } else {
+                formData[name] = $el.val();
+            }
+        });
+        return JSON.stringify(formData);
+    }
+    
+    // Restore form state from JSON
+    function restoreFormState(stateJson) {
+        isRestoringState = true;
+        const state = JSON.parse(stateJson);
+        
+        Object.keys(state).forEach(name => {
+            const $el = $(`[name="${name}"]`);
+            if ($el.is(':checkbox')) {
+                $el.prop('checked', state[name]);
+            } else {
+                $el.val(state[name]);
+            }
+        });
+        
+        isRestoringState = false;
+    }
+    
+    // Save state to history
+    function saveToHistory() {
+        if (isRestoringState) return;
+        
+        const currentState = getFormState();
+        
+        // Don't save if same as last state
+        if (historyIndex >= 0 && historyStack[historyIndex] === currentState) return;
+        
+        // Remove any redo states
+        historyStack = historyStack.slice(0, historyIndex + 1);
+        
+        // Add new state
+        historyStack.push(currentState);
+        
+        // Limit history size
+        if (historyStack.length > maxHistorySize) {
+            historyStack.shift();
+        } else {
+            historyIndex++;
+        }
+        
+        updateUndoRedoButtons();
+    }
+    
+    function undo() {
+        if (historyIndex > 0) {
+            historyIndex--;
+            restoreFormState(historyStack[historyIndex]);
+            updateUndoRedoButtons();
+            showToast('↩️ Đã hoàn tác', 'info');
+        }
+    }
+    
+    function redo() {
+        if (historyIndex < historyStack.length - 1) {
+            historyIndex++;
+            restoreFormState(historyStack[historyIndex]);
+            updateUndoRedoButtons();
+            showToast('↪️ Đã làm lại', 'info');
+        }
+    }
+    
+    function updateUndoRedoButtons() {
+        $('#undo-btn').prop('disabled', historyIndex <= 0);
+        $('#redo-btn').prop('disabled', historyIndex >= historyStack.length - 1);
+    }
+    
+    // Save initial state
+    saveToHistory();
+    
+    // Track changes
+    $('#editor-form').on('change input', 'input, select, textarea', function() {
+        if (!isRestoringState) {
+            saveToHistory();
+        }
+    });
+    
+    // Undo/Redo button clicks
+    $('#undo-btn').on('click', undo);
+    $('#redo-btn').on('click', redo);
+    
     // ========== TAB SWITCHING ==========
     $('.sidebar-tab').on('click', function() {
         const tab = $(this).data('tab');
@@ -466,20 +583,39 @@ $(document).ready(function() {
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                albumPhotos.push(e.target.result);
-                renderAlbumPreview();
-            };
-            reader.readAsDataURL(file);
+            // Upload via AJAX
+            const formData = new FormData();
+            formData.append('photo', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            
+            // Show loading state
+            const loadingHtml = `<div class="album-item loading"><i class="fa-solid fa-spinner fa-spin"></i></div>`;
+            $albumPreview.append(loadingHtml);
+            
+            $.ajax({
+                url: '{{ route("user.invitations.editor.upload", $invitation) }}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    albumPhotos.push(response.url);
+                    renderAlbumPreview();
+                    showToast('✅ Đã upload ảnh!', 'success');
+                },
+                error: function() {
+                    showToast('❌ Upload thất bại!', 'error');
+                    $('.album-item.loading').last().remove();
+                }
+            });
         });
     }
     
     function renderAlbumPreview() {
         $albumPreview.html(albumPhotos.map((photo, i) => `
-            <div class="album-item" data-index="${i}">
+            <div class="album-item" data-index="${i}" data-url="${photo}">
                 <img src="${photo}" alt="Album photo">
-                <button type="button" class="album-item-remove" data-index="${i}">
+                <button type="button" class="album-item-remove" data-index="${i}" data-url="${photo}">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
@@ -488,16 +624,42 @@ $(document).ready(function() {
     }
     
     $(document).on('click', '.album-item-remove', function() {
-        const index = $(this).data('index');
-        albumPhotos.splice(index, 1);
-        renderAlbumPreview();
+        const url = $(this).data('url');
+        const $item = $(this).closest('.album-item');
+        
+        // Delete via AJAX
+        $.ajax({
+            url: '{{ route("user.invitations.editor.delete-photo", $invitation) }}',
+            method: 'DELETE',
+            data: { url: url, _token: '{{ csrf_token() }}' },
+            success: function() {
+                albumPhotos = albumPhotos.filter(p => p !== url);
+                $item.fadeOut(() => $item.remove());
+                $albumData.val(JSON.stringify(albumPhotos));
+                showToast('✅ Đã xóa ảnh!', 'success');
+            },
+            error: function() {
+                showToast('❌ Xóa thất bại!', 'error');
+            }
+        });
     });
     
     // ========== KEYBOARD SHORTCUTS ==========
     $(document).on('keydown', function(e) {
+        // Ctrl+S: Save
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
             $('#editor-form').submit();
+        }
+        // Ctrl+Z: Undo
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+        }
+        // Ctrl+Y or Ctrl+Shift+Z: Redo
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+            e.preventDefault();
+            redo();
         }
     });
     
