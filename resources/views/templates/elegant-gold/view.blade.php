@@ -208,7 +208,7 @@
         <div class="card">
             <form action="{{ route('invitation.rsvp.store', $invitation->slug) }}" method="POST">
                 @csrf
-                <input type="text" name="guest_name" required placeholder="Họ và tên">
+                <input type="text" name="guest_name" required placeholder="Họ và tên" maxlength="255">
                 <select name="attendees_count">
                     <option value="1">1 người</option>
                     <option value="2">2 người</option>
@@ -218,7 +218,7 @@
                     <option value="attending">Sẽ tham dự</option>
                     <option value="not_attending">Không thể tham dự</option>
                 </select>
-                <textarea name="message" rows="3" placeholder="Lời nhắn..."></textarea>
+                <textarea name="message" rows="3" placeholder="Lời nhắn..." maxlength="500"></textarea>
                 <button type="submit" class="btn" style="width: 100%;">Gửi</button>
             </form>
         </div>
@@ -231,7 +231,11 @@
         <p class="font-serif" style="font-size: 2rem; color: var(--gold); margin-bottom: 1rem;">Sổ Lưu Bút</p>
         <div class="divider"></div>
         <div class="card">
-            @foreach($invitation->guestbookEntries()->approved()->recent()->take(5)->get() as $entry)
+            @php
+                // Avoid N+1: use pre-loaded relationship or limit in-view query
+                $guestbookEntries = $invitation->guestbookEntries->where('is_approved', true)->sortByDesc('created_at')->take(5);
+            @endphp
+            @foreach($guestbookEntries as $entry)
             <div style="border-bottom: 1px solid rgba(212,175,55,0.2); padding: 1rem 0; text-align: left;">
                 <p style="color: var(--gold);">{{ $entry->author_name }}</p>
                 <p style="opacity: 0.8;">{{ $entry->message }}</p>
@@ -239,8 +243,8 @@
             @endforeach
             <form action="{{ route('invitation.guestbook.store', $invitation->slug) }}" method="POST" style="margin-top: 2rem;">
                 @csrf
-                <input type="text" name="author_name" required placeholder="Tên của bạn">
-                <textarea name="message" rows="3" required placeholder="Lời chúc..."></textarea>
+                <input type="text" name="author_name" required placeholder="Tên của bạn" maxlength="255">
+                <textarea name="message" rows="3" required placeholder="Lời chúc..." maxlength="1000"></textarea>
                 <button type="submit" class="btn" style="width: 100%;">Gửi lời chúc</button>
             </form>
         </div>
@@ -263,7 +267,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; max-width: 500px; width: 100%;">
             @foreach($albumPhotos as $photo)
             <div style="aspect-ratio: 1; overflow: hidden; border: 1px solid rgba(212,175,55,0.3);">
-                <img src="{{ $photo }}" alt="Album" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="window.open('{{ $photo }}', '_blank')">
+                <img src="{{ $photo }}" alt="Album" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" class="album-photo" data-photo="{{ e($photo) }}">
             </div>
             @endforeach
         </div>
@@ -343,6 +347,14 @@
             }
             isPlaying = !isPlaying;
         }
+        
+        // Album photo click handler (XSS-safe)
+        document.querySelectorAll('.album-photo').forEach(img => {
+            img.addEventListener('click', function() {
+                const url = this.dataset.photo;
+                if (url) window.open(url, '_blank');
+            });
+        });
     </script>
 </body>
 </html>

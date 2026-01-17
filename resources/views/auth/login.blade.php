@@ -33,9 +33,8 @@
                 </div>
                 
                 <div>
-                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex justify-between items-center mb-2">
                         <label for="password" class="block text-sm font-medium">Mật khẩu</label>
-                        {{-- <a href="#" class="text-sm text-primary-400 hover:text-primary-300 transition">Quên mật khẩu?</a> --}}
                     </div>
                     <input type="password" 
                            id="password" 
@@ -58,7 +57,7 @@
                     <label for="remember" class="ml-2 text-sm text-white/70">Ghi nhớ đăng nhập</label>
                 </div>
                 
-                <button type="submit" class="glass-btn glass-btn-full glass-btn-lg">
+                <button type="submit" class="glass-btn glass-btn-full glass-btn-lg" id="login-btn" onclick="this.disabled=true; this.innerHTML='<i class=\\'fa-solid fa-spinner fa-spin\\'></i> Đang xử lý...'; this.form.submit();">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     Đăng nhập
                 </button>

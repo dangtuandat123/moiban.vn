@@ -143,9 +143,27 @@
             @endphp
             
             @foreach($widgets as $widget)
+            @php
+                $colors = [
+                    'pink' => 'rgba(236,72,153,0.2)',
+                    'blue' => 'rgba(59,130,246,0.2)',
+                    'red' => 'rgba(239,68,68,0.2)',
+                    'green' => 'rgba(34,197,94,0.2)',
+                    'purple' => 'rgba(168,85,247,0.2)',
+                    'amber' => 'rgba(245,158,11,0.2)',
+                ];
+                $textColors = [
+                    'pink' => '#f472b6',
+                    'blue' => '#60a5fa',
+                    'red' => '#f87171',
+                    'green' => '#4ade80',
+                    'purple' => '#c084fc',
+                    'amber' => '#fbbf24',
+                ];
+            @endphp
             <div class="glass-card p-6 flex items-start gap-4">
-                <div class="w-12 h-12 rounded-xl bg-{{ $widget['color'] }}-500/20 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid {{ $widget['icon'] }} text-{{ $widget['color'] }}-400"></i>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background: {{ $colors[$widget['color']] ?? 'rgba(255,255,255,0.1)' }}">
+                    <i class="fa-solid {{ $widget['icon'] }}" style="color: {{ $textColors[$widget['color']] ?? '#fff' }}"></i>
                 </div>
                 <div>
                     <h3 class="font-semibold mb-1">{{ $widget['name'] }}</h3>

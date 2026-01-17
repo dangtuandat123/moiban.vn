@@ -26,7 +26,7 @@
                            placeholder="Nguyễn Văn A"
                            required
                            autocomplete="name"
-                           aria-describedby="name-error">
+                           maxlength="255">
                     @error('name')
                         <p id="name-error" class="mt-2 text-sm text-red-400" role="alert">{{ $message }}</p>
                     @enderror
@@ -42,7 +42,7 @@
                            placeholder="email@example.com"
                            required
                            autocomplete="email"
-                           aria-describedby="email-error">
+                           maxlength="255">
                     @error('email')
                         <p id="email-error" class="mt-2 text-sm text-red-400" role="alert">{{ $message }}</p>
                     @enderror
@@ -57,7 +57,7 @@
                            class="glass-input @error('phone') input-error @enderror"
                            placeholder="0901234567"
                            autocomplete="tel"
-                           aria-describedby="phone-error">
+                           maxlength="20">
                     @error('phone')
                         <p id="phone-error" class="mt-2 text-sm text-red-400" role="alert">{{ $message }}</p>
                     @enderror
@@ -89,7 +89,7 @@
                            autocomplete="new-password">
                 </div>
                 
-                <button type="submit" class="glass-btn glass-btn-full glass-btn-lg">
+                <button type="submit" class="glass-btn glass-btn-full glass-btn-lg" id="register-btn" onclick="this.disabled=true; this.innerHTML='<i class=\'fa-solid fa-spinner fa-spin\'></i> Đang xử lý...'; this.form.submit();">
                     <i class="fa-solid fa-user-plus"></i>
                     Đăng ký
                 </button>

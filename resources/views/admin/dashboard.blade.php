@@ -101,7 +101,7 @@
                         <i class="fa-solid fa-arrow-down text-green-400"></i>
                     </div>
                     <div>
-                        <p class="font-medium">{{ $tx->wallet->user->name ?? 'N/A' }}</p>
+                        <p class="font-medium">{{ $tx->wallet?->user?->name ?? 'N/A' }}</p>
                         <p class="text-xs text-white/60">{{ $tx->created_at->diffForHumans() }}</p>
                     </div>
                 </div>

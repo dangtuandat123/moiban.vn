@@ -16,13 +16,13 @@
             <a href="{{ route('user.invitations.editor', $invitation) }}" class="glass-btn">
                 <i class="fa-solid fa-pen mr-2"></i> Chỉnh sửa
             </a>
-            <a href="{{ $invitation->public_url }}" target="_blank" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20">
+            <a href="{{ $invitation->public_url }}" target="_blank" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20" aria-label="Xem thiệp">
                 <i class="fa-solid fa-external-link"></i>
             </a>
             <form action="{{ route('user.invitations.destroy', $invitation) }}" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc muốn xóa thiệp này? Hành động này không thể hoàn tác.')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 transition">
+                <button type="submit" class="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 transition" aria-label="Xóa thiệp">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </form>
@@ -70,7 +70,7 @@
             <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
                     <span class="text-white/60">Template</span>
-                    <span>{{ $invitation->template->name }}</span>
+                    <span>{{ $invitation->template?->name ?? 'N/A' }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-white/60">Ngày tạo</span>

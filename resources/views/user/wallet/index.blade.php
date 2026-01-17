@@ -76,7 +76,7 @@
             @if($transactions->count() > 0)
             <div class="space-y-3">
                 @foreach($transactions as $transaction)
-                <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/8 transition">
+                <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
                             {{ $transaction->type === 'deposit' ? 'bg-green-500/20' : ($transaction->type === 'refund' ? 'bg-blue-500/20' : 'bg-red-500/20') }}">

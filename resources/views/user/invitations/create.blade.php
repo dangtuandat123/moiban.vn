@@ -90,7 +90,7 @@
                         </label>
                         <input type="text" id="groom_name" name="groom_name" value="{{ old('groom_name') }}"
                                class="glass-input @error('groom_name') border-red-500 @enderror" 
-                               placeholder="Nguyễn Văn A" required>
+                               placeholder="Nguyễn Văn A" required maxlength="100">
                         @error('groom_name')
                             <p class="mt-2 text-sm text-red-400"><i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}</p>
                         @enderror
@@ -102,7 +102,7 @@
                         </label>
                         <input type="text" id="bride_name" name="bride_name" value="{{ old('bride_name') }}"
                                class="glass-input @error('bride_name') border-red-500 @enderror" 
-                               placeholder="Trần Thị B" required>
+                               placeholder="Trần Thị B" required maxlength="100">
                         @error('bride_name')
                             <p class="mt-2 text-sm text-red-400"><i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}</p>
                         @enderror
@@ -115,7 +115,7 @@
                     </label>
                     <input type="text" id="title" name="title" value="{{ old('title') }}"
                            class="glass-input @error('title') border-red-500 @enderror" 
-                           placeholder="Thiệp cưới A & B" required>
+                           placeholder="Thiệp cưới A & B" required maxlength="255">
                     @error('title')
                         <p class="mt-2 text-sm text-red-400"><i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}</p>
                     @enderror
