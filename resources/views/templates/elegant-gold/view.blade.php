@@ -256,7 +256,8 @@
     @php
         $albumPhotos = $content['album_photos'] ?? [];
         if (is_string($albumPhotos)) {
-            $albumPhotos = json_decode($albumPhotos, true) ?? [];
+            $decoded = json_decode($albumPhotos, true);
+            $albumPhotos = is_array($decoded) ? $decoded : [];
         }
     @endphp
     @if(is_array($albumPhotos) && count($albumPhotos) > 0)

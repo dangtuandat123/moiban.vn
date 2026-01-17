@@ -28,6 +28,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
+    <!-- AlpineJS (for dropdown and interactive components) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <style>
         :root {
             /* ========== COLOR PALETTE SYSTEM ========== */
@@ -287,6 +290,17 @@
             color: var(--color-text-primary);
         }
 
+        /* Button Danger */
+        .glass-btn-danger {
+            background: linear-gradient(135deg, var(--color-error), #dc2626);
+            color: white;
+            box-shadow: var(--shadow-md), 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        .glass-btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), 0 0 30px rgba(239, 68, 68, 0.4);
+        }
+
         /* Button States */
         .glass-btn:disabled {
             opacity: 0.5;
@@ -423,6 +437,17 @@
         
         .hidden-desktop { display: block; }
         @media (min-width: 768px) { .hidden-desktop { display: none; } }
+
+        /* ========== GLASS DROPDOWN ========== */
+        .glass-dropdown {
+            position: relative;
+        }
+        .glass-dropdown [x-show] {
+            background: var(--color-surface-overlay);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+        }
 
         /* ========== SELECT2 GLASSMORPHISM ========== */
         .select2-container { width: 100% !important; }

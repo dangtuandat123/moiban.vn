@@ -7,7 +7,7 @@
     <div class="container max-w-4xl">
         <!-- Header -->
         <div class="flex items-center gap-4 mb-8">
-            <a href="{{ route('user.dashboard') }}" class="text-white/60 hover:text-white transition">
+            <a href="{{ route('user.dashboard') }}" class="text-white/60 hover:text-white transition" aria-label="Quay lại Dashboard">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <div>
@@ -34,7 +34,7 @@
                             <p class="text-xs text-white/50">Thiệp</p>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-gradient">{{ number_format(Auth::user()->wallet->balance ?? 0, 0, ',', '.') }}</p>
+                            <p class="text-2xl font-bold text-gradient">{{ number_format(Auth::user()->wallet?->balance ?? 0, 0, ',', '.') }}</p>
                             <p class="text-xs text-white/50">VND</p>
                         </div>
                     </div>
