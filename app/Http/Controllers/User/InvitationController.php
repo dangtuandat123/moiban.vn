@@ -72,12 +72,17 @@ class InvitationController extends Controller
             $validated
         );
 
-        // Thông báo Telegram
-        $this->telegramService->notifyNewInvitation($request->user(), $invitation);
+        // Thông báo Telegram (không block nếu fail)
+        try {
+            $this->telegramService->notifyNewInvitation($request->user(), $invitation);
+        } catch (\Exception $e) {
+            \Log::error('Telegram notification failed: ' . $e->getMessage());
+        }
 
+        $trialDays = config('app.trial_duration_days', 2);
         return redirect()
             ->route('user.invitations.editor', $invitation)
-            ->with('success', 'Tạo thiệp thành công! Bạn có 2 ngày dùng thử miễn phí.');
+            ->with('success', "Tạo thiệp thành công! Bạn có {$trialDays} ngày dùng thử miễn phí.");
     }
 
     /**

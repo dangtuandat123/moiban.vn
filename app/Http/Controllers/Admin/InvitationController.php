@@ -33,6 +33,9 @@ class InvitationController extends Controller
 
     public function lock(Invitation $invitation)
     {
+        // Admin only - but ensure invitation exists and is not already locked
+        abort_if($invitation->isLocked(), 400, 'Thiệp đã bị khóa.');
+        
         $invitation->lock();
 
         return back()->with('success', 'Đã khóa thiệp.');
@@ -40,6 +43,9 @@ class InvitationController extends Controller
 
     public function unlock(Invitation $invitation)
     {
+        // Admin only - ensure invitation is locked before unlocking
+        abort_if(!$invitation->isLocked(), 400, 'Thiệp chưa bị khóa.');
+        
         $invitation->update(['status' => 'active']);
 
         return back()->with('success', 'Đã mở khóa thiệp.');
@@ -47,6 +53,7 @@ class InvitationController extends Controller
 
     public function destroy(Invitation $invitation)
     {
+        // Soft delete - can be restored later
         $invitation->delete();
 
         return redirect()

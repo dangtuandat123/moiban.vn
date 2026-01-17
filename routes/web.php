@@ -40,8 +40,9 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
 
-    // Invitations CRUD
-    Route::resource('invitations', \App\Http\Controllers\User\InvitationController::class);
+    // Invitations CRUD (No edit/update - use Editor instead)
+    Route::resource('invitations', \App\Http\Controllers\User\InvitationController::class)
+        ->except(['edit', 'update']);
 
     // Invitation Editor
     Route::get('/invitations/{invitation}/editor', [\App\Http\Controllers\User\EditorController::class, 'index'])->name('invitations.editor');
@@ -105,11 +106,15 @@ Route::get('/og-image/{slug}/png', [\App\Http\Controllers\OgImageController::cla
 Route::get('/locked/{slug}', [\App\Http\Controllers\Public\InvitationController::class, 'locked'])->name('invitation.locked');
 Route::get('/expired/{slug}', [\App\Http\Controllers\Public\InvitationController::class, 'expired'])->name('invitation.expired');
 
-// RSVP submission
-Route::post('/{slug}/rsvp', [\App\Http\Controllers\Public\RsvpController::class, 'store'])->name('invitation.rsvp.store');
+// RSVP submission (Rate limited: 5 requests per minute per IP)
+Route::post('/{slug}/rsvp', [\App\Http\Controllers\Public\RsvpController::class, 'store'])
+    ->name('invitation.rsvp.store')
+    ->middleware('throttle:5,1');
 
-// Guestbook submission
-Route::post('/{slug}/guestbook', [\App\Http\Controllers\Public\GuestbookController::class, 'store'])->name('invitation.guestbook.store');
+// Guestbook submission (Rate limited: 5 requests per minute per IP)
+Route::post('/{slug}/guestbook', [\App\Http\Controllers\Public\GuestbookController::class, 'store'])
+    ->name('invitation.guestbook.store')
+    ->middleware('throttle:5,1');
 
 // View invitation (PHẢI ĐỂ CUỐI CÙNG vì catch-all slug)
 Route::get('/{slug}', [\App\Http\Controllers\Public\InvitationController::class, 'show'])

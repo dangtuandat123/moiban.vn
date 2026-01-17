@@ -44,9 +44,12 @@
         <!-- Package Selection -->
         <div class="grid md:grid-cols-2 gap-4 mb-8">
             @foreach($packages as $package)
-            <label class="cursor-pointer">
+            <label class="cursor-pointer {{ $balance < $package->price ? 'pointer-events-none' : '' }}">
                 <input type="radio" name="package_id" value="{{ $package->id }}" 
-                       class="hidden peer" {{ old('package_id') == $package->id ? 'checked' : '' }}>
+                       class="hidden peer" 
+                       {{ old('package_id') == $package->id ? 'checked' : '' }}
+                       {{ $balance < $package->price ? 'disabled' : '' }}
+                       required>
                 <div class="glass-card p-6 peer-checked:ring-2 peer-checked:ring-primary-500 transition {{ $balance < $package->price ? 'opacity-50' : '' }}">
                     <div class="flex items-start justify-between mb-4">
                         <div>
@@ -86,11 +89,19 @@
         
         <!-- Submit -->
         <div class="flex justify-end">
-            <button type="submit" class="glass-btn px-8 py-3">
+            <button type="submit" class="glass-btn px-8 py-3" id="purchase-btn">
                 <i class="fa-solid fa-shopping-cart mr-2"></i>
-                Mua gói
+                <span>Mua gói</span>
             </button>
         </div>
     </form>
+    
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const btn = document.getElementById('purchase-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+        });
+    </script>
 </div>
 @endsection

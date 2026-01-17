@@ -40,11 +40,12 @@ class OgImageController extends Controller
      */
     private function generateHtml(Invitation $invitation): string
     {
-        $groomName = $invitation->content['groom_name'] ?? 'Chú rể';
-        $brideName = $invitation->content['bride_name'] ?? 'Cô dâu';
+        // Escape user input to prevent XSS
+        $groomName = htmlspecialchars($invitation->content['groom_name'] ?? 'Chú rể', ENT_QUOTES, 'UTF-8');
+        $brideName = htmlspecialchars($invitation->content['bride_name'] ?? 'Cô dâu', ENT_QUOTES, 'UTF-8');
         $eventDate = $invitation->content['event_date'] ?? '';
         $formattedDate = $eventDate ? date('d/m/Y', strtotime($eventDate)) : '';
-        $primaryColor = $invitation->content['primary_color'] ?? '#b76e79';
+        $primaryColor = preg_replace('/[^a-fA-F0-9#]/', '', $invitation->content['primary_color'] ?? '#b76e79');
 
         return <<<HTML
 <!DOCTYPE html>
