@@ -30,6 +30,10 @@
     </div>
     
     <!-- Status & Stats -->
+    @php
+        $attendingCount = $invitation->rsvps->where('status', 'attending')->sum('attendees_count');
+        $guestbookCount = $invitation->guestbookEntries->count();
+    @endphp
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div class="glass-card p-4 text-center">
             <p class="text-2xl font-bold">{{ number_format($invitation->view_count) }}</p>
@@ -40,11 +44,11 @@
         </div>
         <div class="glass-card p-4 text-center">
             <p class="text-sm text-white/60">RSVP</p>
-            <p class="text-xl font-bold">{{ $invitation->rsvps->where('status', 'attending')->sum('attendees_count') }}</p>
+            <p class="text-xl font-bold">{{ $attendingCount }}</p>
         </div>
         <div class="glass-card p-4 text-center">
             <p class="text-sm text-white/60">Lời chúc</p>
-            <p class="text-xl font-bold">{{ $invitation->guestbookEntries->count() }}</p>
+            <p class="text-xl font-bold">{{ $guestbookCount }}</p>
         </div>
     </div>
     

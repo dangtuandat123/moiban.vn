@@ -67,7 +67,7 @@
                     <p class="text-sm text-white/60 mb-4">{{ $package->description }}</p>
                     
                     <!-- Features -->
-                    @if($package->features)
+                    @if(is_array($package->features) && count($package->features) > 0)
                     <div class="flex flex-wrap gap-2">
                         @foreach($package->features as $feature)
                         <span class="text-xs px-2 py-1 rounded bg-white/10">
