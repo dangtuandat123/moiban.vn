@@ -48,6 +48,8 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::post('/invitations/{invitation}/editor', [\App\Http\Controllers\User\EditorController::class, 'save'])->name('invitations.editor.save');
     Route::post('/invitations/{invitation}/upload-photo', [\App\Http\Controllers\User\EditorController::class, 'uploadPhoto'])->name('invitations.editor.upload');
     Route::delete('/invitations/{invitation}/delete-photo', [\App\Http\Controllers\User\EditorController::class, 'deletePhoto'])->name('invitations.editor.delete-photo');
+    Route::post('/invitations/{invitation}/upload-music', [\App\Http\Controllers\User\EditorController::class, 'uploadMusic'])->name('invitations.editor.upload-music');
+    Route::delete('/invitations/{invitation}/delete-music', [\App\Http\Controllers\User\EditorController::class, 'deleteMusic'])->name('invitations.editor.delete-music');
 
     // Wallet
     Route::get('/wallet', [\App\Http\Controllers\User\WalletController::class, 'index'])->name('wallet');

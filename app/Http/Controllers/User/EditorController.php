@@ -130,4 +130,66 @@ class EditorController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    /**
+     * Upload nhạc nền
+     */
+    public function uploadMusic(Request $request, Invitation $invitation)
+    {
+        $this->authorize('update', $invitation);
+
+        $request->validate([
+            'music' => ['required', 'file', 'mimes:mp3,wav,ogg', 'max:' . config('moiban.max_music_size', 10240)], // Default 10MB
+        ], [
+            'music.max' => 'File nhạc tối đa ' . (config('moiban.max_music_size', 10240) / 1024) . 'MB',
+            'music.mimes' => 'Chỉ hỗ trợ file MP3, WAV, OGG',
+        ]);
+
+        // Xóa file nhạc cũ nếu có
+        $content = $invitation->content ?? [];
+        if (!empty($content['music_file'])) {
+            \Storage::disk('public')->delete($content['music_file']);
+        }
+
+        // Lưu file mới
+        $path = $request->file('music')->store(
+            "invitations/{$invitation->id}/music",
+            'public'
+        );
+
+        // Lấy URL công khai
+        $url = asset('storage/' . $path);
+
+        // Cập nhật content
+        $content['music_url'] = $url;
+        $content['music_file'] = $path;
+        $invitation->update(['content' => $content]);
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'path' => $path,
+        ]);
+    }
+
+    /**
+     * Xóa nhạc nền
+     */
+    public function deleteMusic(Request $request, Invitation $invitation)
+    {
+        $this->authorize('update', $invitation);
+
+        $content = $invitation->content ?? [];
+        
+        // Xóa file từ storage
+        if (!empty($content['music_file'])) {
+            \Storage::disk('public')->delete($content['music_file']);
+        }
+
+        // Xóa khỏi content
+        unset($content['music_url'], $content['music_file']);
+        $invitation->update(['content' => $content]);
+
+        return response()->json(['success' => true]);
+    }
 }

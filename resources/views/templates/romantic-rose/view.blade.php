@@ -12,6 +12,9 @@
     <meta property="og:description" content="Mời bạn đến dự lễ cưới của {{ $invitation->couple_name }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $invitation->public_url }}">
+    <meta property="og:image" content="{{ route('og-image.png', $invitation->slug) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -542,7 +545,65 @@
             </a>
             @endif
         </div>
+        
+        {{-- Maps Embed --}}
+        @if(in_array('maps', $widgets) && (!empty($content['maps_link']) || (!empty($content['latitude']) && !empty($content['longitude']))))
+        <div class="card" style="margin-top: 2rem; padding: 0; overflow: hidden;">
+            @php
+                // Ưu tiên dùng lat/lng nếu có
+                if (!empty($content['latitude']) && !empty($content['longitude'])) {
+                    $lat = $content['latitude'];
+                    $lng = $content['longitude'];
+                    $embedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919!2d{$lng}!3d{$lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zLat%2FLng!5e0!3m2!1svi!2svn";
+                } elseif (!empty($content['maps_link'])) {
+                    $mapsLink = $content['maps_link'];
+                    if (str_contains($mapsLink, 'google.com/maps')) {
+                        if (preg_match('/place\/([^\/]+)/', $mapsLink, $matches)) {
+                            $embedUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919!2d106.6!3d10.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s' . urlencode($matches[1]) . '!5e0!3m2!1svi!2svn!4v1';
+                        } else {
+                            $embedUrl = str_replace('/maps/', '/maps/embed?', $mapsLink);
+                        }
+                    } else {
+                        $embedUrl = $mapsLink;
+                    }
+                }
+            @endphp
+            <iframe 
+                src="{{ $embedUrl }}"
+                width="100%" 
+                height="250" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+        @endif
     </section>
+    
+    {{-- ========== ALBUM ========== --}}
+    @if(in_array('album', $widgets))
+    @php
+        $albumPhotos = $content['album_photos'] ?? [];
+        if (is_string($albumPhotos)) {
+            $albumPhotos = json_decode($albumPhotos, true) ?? [];
+        }
+    @endphp
+    @if(is_array($albumPhotos) && count($albumPhotos) > 0)
+    <section id="album">
+        <h2 class="section-title">Album Ảnh</h2>
+        <div class="heart-divider"><i class="fa-solid fa-heart"></i></div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; max-width: 500px; width: 100%;">
+            @foreach($albumPhotos as $photo)
+            <div style="aspect-ratio: 1; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                <img src="{{ $photo }}" alt="Album ảnh cưới" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="window.open('{{ $photo }}', '_blank')">
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @endif
+    @endif
     
     {{-- ========== RSVP ========== --}}
     @if(in_array('rsvp', $widgets))

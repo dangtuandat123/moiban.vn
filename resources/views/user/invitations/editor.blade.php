@@ -131,6 +131,22 @@
                                        class="form-input" placeholder="https://maps.google.com/...">
                                 <p class="form-hint">Dán link Google Maps để khách dễ tìm đường</p>
                             </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Vĩ độ (Latitude) <span class="optional">(tùy chọn)</span></label>
+                                    <input type="text" name="content[latitude]" 
+                                           value="{{ $invitation->content['latitude'] ?? '' }}"
+                                           class="form-input" placeholder="10.762622">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Kinh độ (Longitude) <span class="optional">(tùy chọn)</span></label>
+                                    <input type="text" name="content[longitude]" 
+                                           value="{{ $invitation->content['longitude'] ?? '' }}"
+                                           class="form-input" placeholder="106.660172">
+                                </div>
+                            </div>
+                            <p class="form-hint" style="margin-top: -0.5rem;">Nhập tọa độ để embed bản đồ. Có thể lấy từ Google Maps.</p>
                         </div>
                         
                         <!-- Album ảnh -->
@@ -275,6 +291,31 @@
                             <h3 class="section-header">
                                 <i class="fa-solid fa-music"></i> Nhạc nền
                             </h3>
+                            
+                            <!-- Upload file nhạc -->
+                            <div class="form-group">
+                                <label class="form-label">Upload file nhạc <span class="optional">(MP3, WAV, OGG - tối đa {{ config('moiban.max_music_size', 10240) / 1024 }}MB)</span></label>
+                                <div class="upload-zone" id="music-upload-zone" style="padding: 1rem;">
+                                    <input type="file" id="music-input" accept=".mp3,.wav,.ogg" class="hidden">
+                                    <i class="fa-solid fa-cloud-upload"></i>
+                                    <span>Chọn file nhạc</span>
+                                </div>
+                                @if(!empty($invitation->content['music_file']))
+                                <div id="current-music" class="flex items-center gap-2 mt-2 p-2 bg-white/5 rounded">
+                                    <i class="fa-solid fa-music text-primary-400"></i>
+                                    <span class="flex-1 text-sm truncate">Đã upload file nhạc</span>
+                                    <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                                @endif
+                            </div>
+                            
+                            <div class="flex items-center gap-2 my-3">
+                                <div class="h-px bg-white/10 flex-1"></div>
+                                <span class="text-xs text-white/40">HOẶC</span>
+                                <div class="h-px bg-white/10 flex-1"></div>
+                            </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Link nhạc <span class="optional">(YouTube/SoundCloud)</span></label>
@@ -637,6 +678,79 @@ $(document).ready(function() {
                 $item.fadeOut(() => $item.remove());
                 $albumData.val(JSON.stringify(albumPhotos));
                 showToast('✅ Đã xóa ảnh!', 'success');
+            },
+            error: function() {
+                showToast('❌ Xóa thất bại!', 'error');
+            }
+        });
+    });
+    
+    // ========== MUSIC UPLOAD ==========
+    const $musicUploadZone = $('#music-upload-zone');
+    const $musicInput = $('#music-input');
+    
+    $musicUploadZone.on('click', () => $musicInput.click());
+    
+    $musicInput.on('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        
+        // Validate size
+        const maxSize = {{ config('moiban.max_music_size', 10240) }} * 1024;
+        if (file.size > maxSize) {
+            showToast('❌ File nhạc quá lớn!', 'error');
+            return;
+        }
+        
+        // Upload via AJAX
+        const formData = new FormData();
+        formData.append('music', file);
+        formData.append('_token', '{{ csrf_token() }}');
+        
+        $musicUploadZone.html('<i class="fa-solid fa-spinner fa-spin"></i> Đang upload...');
+        
+        $.ajax({
+            url: '{{ route("user.invitations.editor.upload-music", $invitation) }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('input[name="content[music_url]"]').val(response.url);
+                $musicUploadZone.html('<i class="fa-solid fa-cloud-upload"></i> <span>Chọn file nhạc</span>');
+                
+                // Show current music indicator
+                if (!$('#current-music').length) {
+                    $musicUploadZone.after(`
+                        <div id="current-music" class="flex items-center gap-2 mt-2 p-2 bg-white/5 rounded">
+                            <i class="fa-solid fa-music text-primary-400"></i>
+                            <span class="flex-1 text-sm truncate">Đã upload file nhạc</span>
+                            <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `);
+                }
+                
+                showToast('✅ Đã upload nhạc!', 'success');
+            },
+            error: function(xhr) {
+                $musicUploadZone.html('<i class="fa-solid fa-cloud-upload"></i> <span>Chọn file nhạc</span>');
+                showToast('❌ Upload thất bại!', 'error');
+            }
+        });
+    });
+    
+    // Delete music
+    $(document).on('click', '#delete-music-btn', function() {
+        $.ajax({
+            url: '{{ route("user.invitations.editor.delete-music", $invitation) }}',
+            method: 'DELETE',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function() {
+                $('#current-music').fadeOut(() => $('#current-music').remove());
+                $('input[name="content[music_url]"]').val('');
+                showToast('✅ Đã xóa nhạc!', 'success');
             },
             error: function() {
                 showToast('❌ Xóa thất bại!', 'error');

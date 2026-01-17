@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Models\Rsvp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewRsvpNotification;
 
 /**
  * Controller: Xử lý RSVP
@@ -34,7 +36,7 @@ class RsvpController extends Controller
             'status.required' => 'Vui lòng chọn trạng thái tham dự',
         ]);
 
-        Rsvp::create([
+        $rsvp = Rsvp::create([
             'invitation_id' => $invitation->id,
             'guest_name' => $validated['guest_name'],
             'attendees_count' => $validated['attendees_count'],
@@ -42,6 +44,17 @@ class RsvpController extends Controller
             'message' => $validated['message'] ?? null,
             'ip_address' => $request->ip(),
         ]);
+
+        // Gửi notification cho chủ thiệp
+        try {
+            $owner = $invitation->user;
+            if ($owner) {
+                $owner->notify(new NewRsvpNotification($rsvp, $invitation));
+            }
+        } catch (\Exception $e) {
+            // Log error nhưng không block user
+            \Log::error('Failed to send RSVP notification: ' . $e->getMessage());
+        }
 
         return back()->with('rsvp_success', 'Cảm ơn bạn đã xác nhận!');
     }

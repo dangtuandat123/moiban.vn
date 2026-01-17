@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ $invitation->title }}</title>
     <meta name="description" content="Thiệp cưới của {{ $invitation->couple_name }}">
+    <meta property="og:title" content="{{ $invitation->title }}">
+    <meta property="og:description" content="Mời bạn đến dự lễ cưới của {{ $invitation->couple_name }}">
+    <meta property="og:image" content="{{ route('og-image.png', $invitation->slug) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
@@ -242,6 +247,64 @@
     </section>
     @endif
 
+    {{-- ========== ALBUM ========== --}}
+    @if(in_array('album', $widgets))
+    @php
+        $albumPhotos = $content['album_photos'] ?? [];
+        if (is_string($albumPhotos)) {
+            $albumPhotos = json_decode($albumPhotos, true) ?? [];
+        }
+    @endphp
+    @if(is_array($albumPhotos) && count($albumPhotos) > 0)
+    <section id="album">
+        <div class="frame"></div>
+        <p class="font-serif" style="font-size: 2rem; color: var(--gold); margin-bottom: 1rem;">Album Ảnh</p>
+        <div class="divider"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; max-width: 500px; width: 100%;">
+            @foreach($albumPhotos as $photo)
+            <div style="aspect-ratio: 1; overflow: hidden; border: 1px solid rgba(212,175,55,0.3);">
+                <img src="{{ $photo }}" alt="Album" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="window.open('{{ $photo }}', '_blank')">
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @endif
+    @endif
+
+    {{-- ========== VIETQR ========== --}}
+    @if(in_array('vietqr', $widgets) && !empty($content['bank_code']) && !empty($content['bank_account']))
+    <section id="vietqr">
+        <div class="frame"></div>
+        <p class="font-serif" style="font-size: 2rem; color: var(--gold); margin-bottom: 1rem;">Mừng Cưới</p>
+        <div class="divider"></div>
+        <div class="card" style="text-align: center;">
+            <p style="opacity: 0.7; margin-bottom: 1rem;">Nếu không tiện đến tham dự, bạn có thể mừng cưới qua QR Code</p>
+            @php
+                $bankCode = $content['bank_code'];
+                $accountNumber = $content['bank_account'];
+                $accountName = urlencode($content['bank_account_name'] ?? 'NGUYEN VAN A');
+                $addInfo = urlencode("Mung cuoi " . ($content['groom_name'] ?? '') . " " . ($content['bride_name'] ?? ''));
+                $qrUrl = "https://img.vietqr.io/image/{$bankCode}-{$accountNumber}-compact.jpg?accountName={$accountName}&addInfo={$addInfo}";
+            @endphp
+            <div style="background: white; padding: 0.5rem; display: inline-block; border-radius: 4px;">
+                <img src="{{ $qrUrl }}" alt="VietQR" style="max-width: 180px;" loading="lazy">
+            </div>
+            <p style="margin-top: 1rem; color: var(--gold);">{{ $content['bank_account_name'] ?? '' }}</p>
+            <p style="opacity: 0.7;">{{ $content['bank_account'] ?? '' }}</p>
+        </div>
+    </section>
+    @endif
+
+    {{-- Music Button --}}
+    @if(in_array('music', $widgets) && !empty($content['music_url']))
+    <button style="position: fixed; top: 20px; right: 20px; width: 50px; height: 50px; background: var(--gold); color: var(--dark); border: none; border-radius: 50%; cursor: pointer; z-index: 100;" id="musicBtn" onclick="toggleMusic()">
+        <i class="fa-solid fa-music" id="musicIcon"></i>
+    </button>
+    <audio id="bgMusic" loop>
+        <source src="{{ $content['music_url'] }}" type="audio/mpeg">
+    </audio>
+    @endif
+
     <section style="min-height: auto; padding: 40px;">
         <p style="opacity: 0.5; font-size: 0.8rem;">Made with ❤️ by <a href="https://moiban.vn" style="color: var(--gold);">moiban.vn</a></p>
     </section>
@@ -262,6 +325,23 @@
             }
             updateCountdown();
             setInterval(updateCountdown, 1000);
+        }
+        
+        // Music toggle
+        let isPlaying = false;
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            if (!audio) return;
+            
+            if (isPlaying) {
+                audio.pause();
+                icon.className = 'fa-solid fa-music';
+            } else {
+                audio.play();
+                icon.className = 'fa-solid fa-pause';
+            }
+            isPlaying = !isPlaying;
         }
     </script>
 </body>
