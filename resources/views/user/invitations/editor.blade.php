@@ -72,13 +72,13 @@
                                     <label class="form-label">Tên chú rể</label>
                                     <input type="text" name="content[groom_name]" 
                                            value="{{ $invitation->content['groom_name'] ?? '' }}"
-                                           class="form-input" placeholder="Minh Anh">
+                                           class="form-input" placeholder="Minh Anh" maxlength="100">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Tên cô dâu</label>
                                     <input type="text" name="content[bride_name]" 
                                            value="{{ $invitation->content['bride_name'] ?? '' }}"
-                                           class="form-input" placeholder="Thùy Linh">
+                                           class="form-input" placeholder="Thùy Linh" maxlength="100">
                                 </div>
                             </div>
                             
@@ -100,7 +100,7 @@
                                     <label class="form-label">Ngày cưới</label>
                                     <input type="date" name="content[event_date]" 
                                            value="{{ $invitation->content['event_date'] ?? '' }}"
-                                           class="form-input">
+                                           class="form-input" min="{{ date('Y-m-d') }}">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Giờ</label>
@@ -114,22 +114,22 @@
                                 <label class="form-label">Tên địa điểm</label>
                                 <input type="text" name="content[venue_name]" 
                                        value="{{ $invitation->content['venue_name'] ?? '' }}"
-                                       class="form-input" placeholder="Trung tâm Hội nghị ABC">
+                                       class="form-input" placeholder="Trung tâm Hội nghị ABC" maxlength="255">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Địa chỉ</label>
                                 <input type="text" name="content[venue_address]" 
                                        value="{{ $invitation->content['venue_address'] ?? '' }}"
-                                       class="form-input" placeholder="123 Đường ABC, Quận 1, TP.HCM">
+                                       class="form-input" placeholder="123 Đường ABC, Quận 1, TP.HCM" maxlength="500">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Google Maps Link <span class="optional">(tùy chọn)</span></label>
                                 <input type="url" name="content[maps_link]" 
                                        value="{{ $invitation->content['maps_link'] ?? '' }}"
-                                       class="form-input" placeholder="https://maps.google.com/...">
-                                <p class="form-hint">Dán link Google Maps để khách dễ tìm đường</p>
+                                       class="form-input" placeholder="https://maps.google.com/..." maxlength="500">
+                                <p class="form-hint">Dán link Google Maps để khách dễ tìm đường. Chỉ chấp nhận link từ google.com hoặc goo.gl</p>
                             </div>
                             
                             <div class="form-grid-2">
@@ -137,13 +137,15 @@
                                     <label class="form-label">Vĩ độ (Latitude) <span class="optional">(tùy chọn)</span></label>
                                     <input type="text" name="content[latitude]" 
                                            value="{{ $invitation->content['latitude'] ?? '' }}"
-                                           class="form-input" placeholder="10.762622">
+                                           class="form-input" placeholder="10.762622"
+                                           pattern="^-?[0-9]*\.?[0-9]+$" title="Chỉ nhập số và dấu chấm">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Kinh độ (Longitude) <span class="optional">(tùy chọn)</span></label>
                                     <input type="text" name="content[longitude]" 
                                            value="{{ $invitation->content['longitude'] ?? '' }}"
-                                           class="form-input" placeholder="106.660172">
+                                           class="form-input" placeholder="106.660172"
+                                           pattern="^-?[0-9]*\.?[0-9]+$" title="Chỉ nhập số và dấu chấm">
                                 </div>
                             </div>
                             <p class="form-hint" style="margin-top: -0.5rem;">Nhập tọa độ để embed bản đồ. Có thể lấy từ Google Maps.</p>
