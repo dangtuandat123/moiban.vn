@@ -212,13 +212,14 @@
                                     <label class="form-label">Số tài khoản</label>
                                     <input type="text" name="content[bank_account]" 
                                            value="{{ $invitation->content['bank_account'] ?? '' }}"
-                                           class="form-input" placeholder="0123456789">
+                                           class="form-input" placeholder="0123456789"
+                                           maxlength="20" pattern="[0-9]+" title="Chỉ nhập số">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Tên chủ TK</label>
                                     <input type="text" name="content[bank_account_name]" 
                                            value="{{ $invitation->content['bank_account_name'] ?? '' }}"
-                                           class="form-input" placeholder="NGUYEN VAN A">
+                                           class="form-input" placeholder="NGUYEN VAN A" maxlength="100">
                                 </div>
                             </div>
                         </div>
@@ -323,8 +324,8 @@
                                 <label class="form-label">Link nhạc <span class="optional">(YouTube/SoundCloud)</span></label>
                                 <input type="url" name="content[music_url]" 
                                        value="{{ $invitation->content['music_url'] ?? '' }}"
-                                       class="form-input" placeholder="https://youtube.com/watch?v=...">
-                                <p class="form-hint">Dán link video nhạc từ YouTube. Ví dụ: nhạc đám cưới, nhạc không lời.</p>
+                                       class="form-input" placeholder="https://youtube.com/watch?v=..." maxlength="500">
+                                <p class="form-hint">Dán link video nhạc từ YouTube hoặc SoundCloud. Chỉ chấp nhận link từ các nguồn uy tín.</p>
                             </div>
                             
                             <div class="flex items-center gap-2 mt-3">
@@ -403,7 +404,11 @@
             
             <div class="preview-container">
                 <div id="preview-frame" class="preview-frame preview-frame-mobile">
-                    <iframe id="preview-iframe" src="{{ $invitation->public_url }}"></iframe>
+                    <div id="iframe-loading" class="iframe-loading-overlay">
+                        <i class="fa-solid fa-spinner fa-spin text-2xl text-white/60"></i>
+                        <p class="text-sm text-white/40 mt-2">Đang tải xem trước...</p>
+                    </div>
+                    <iframe id="preview-iframe" src="{{ $invitation->public_url }}" onload="document.getElementById('iframe-loading').style.display='none'"></iframe>
                 </div>
             </div>
         </main>
