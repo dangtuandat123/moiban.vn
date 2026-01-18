@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        @php
+            $fontHeading = $invitation->content['font_heading'] ?? 'Cormorant Garamond';
+            $fontBody = $invitation->content['font_body'] ?? 'Montserrat';
+        @endphp
+        
         :root {
             --gold: {{ $invitation->content['primary_color'] ?? '#d4af37' }};
             --gold-light: #f5e6a3;
@@ -24,17 +29,61 @@
             --cream: #fffef5;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $fontBody }}', 'Montserrat', sans-serif;
             background: var(--dark);
             color: var(--cream);
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .font-serif { font-family: '{{ $fontHeading }}', 'Cormorant Garamond', serif; }
+        
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .animate-fadeInUp {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-fadeIn {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
         
         section {
             min-height: 100vh;
-            padding: 80px 20px;
+            padding: 60px 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -49,12 +98,29 @@
             top: 20px; left: 20px; right: 20px; bottom: 20px;
             border: 1px solid var(--gold);
             pointer-events: none;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out 0.5s forwards;
         }
         .frame::before {
             content: '';
             position: absolute;
             top: 10px; left: 10px; right: 10px; bottom: 10px;
             border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+        .scroll-indicator i {
+            font-size: 1.5rem;
+            color: var(--gold);
+            opacity: 0.7;
         }
         
         .hero h1 {
@@ -166,12 +232,15 @@
 
     <section class="hero">
         <div class="frame"></div>
-        <p style="letter-spacing: 0.5em; text-transform: uppercase; opacity: 0.7; margin-bottom: 2rem;">Wedding Invitation</p>
-        <p class="names">{{ $content['groom_name'] ?? 'Chú Rể' }}</p>
-        <span class="ampersand">&</span>
-        <p class="names">{{ $content['bride_name'] ?? 'Cô Dâu' }}</p>
-        <div class="divider"></div>
-        <p style="letter-spacing: 0.3em;">{{ \Carbon\Carbon::parse($content['event_date'] ?? now())->format('d . m . Y') }}</p>
+        <p class="animate-fadeInUp" style="letter-spacing: 0.5em; text-transform: uppercase; opacity: 0.7; margin-bottom: 2rem;">Wedding Invitation</p>
+        <p class="names animate-fadeInUp delay-1">{{ $content['groom_name'] ?? 'Chú Rể' }}</p>
+        <span class="ampersand animate-fadeInUp delay-2">&</span>
+        <p class="names animate-fadeInUp delay-3">{{ $content['bride_name'] ?? 'Cô Dâu' }}</p>
+        <div class="divider animate-fadeInUp delay-3"></div>
+        <p class="animate-fadeInUp delay-4" style="letter-spacing: 0.3em;">{{ \Carbon\Carbon::parse($content['event_date'] ?? now())->format('d . m . Y') }}</p>
+        <div class="scroll-indicator">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
     </section>
 
     @if(in_array('countdown', $widgets))

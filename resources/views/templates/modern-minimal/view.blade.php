@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        @php
+            $fontHeading = $invitation->content['font_heading'] ?? 'Playfair Display';
+            $fontBody = $invitation->content['font_body'] ?? 'Inter';
+        @endphp
+        
         :root {
             --accent: {{ $invitation->content['primary_color'] ?? '#2d3436' }};
             --bg: #fafafa;
@@ -24,14 +29,65 @@
             --light: #dfe6e9;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: '{{ $fontBody }}', 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             font-weight: 300;
+            overflow-x: hidden;
         }
-        .font-display { font-family: 'Playfair Display', serif; }
+        .font-display { font-family: '{{ $fontHeading }}', 'Playfair Display', serif; }
+        
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .animate-fadeInUp {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-fadeIn {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+        .scroll-indicator i {
+            font-size: 1.5rem;
+            color: var(--text);
+            opacity: 0.4;
+        }
         
         section {
             min-height: 100vh;
@@ -43,6 +99,7 @@
             text-align: center;
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
         }
         
         .hero h1 {
@@ -154,11 +211,14 @@
     @endphp
 
     <section class="hero">
-        <p style="font-size: 0.75rem; letter-spacing: 0.4em; text-transform: uppercase; opacity: 0.5; margin-bottom: 3rem;">We're Getting Married</p>
-        <h1>{{ $content['groom_name'] ?? 'Chú Rể' }}</h1>
-        <p class="amp">&</p>
-        <h1>{{ $content['bride_name'] ?? 'Cô Dâu' }}</h1>
-        <p class="date">{{ \Carbon\Carbon::parse($content['event_date'] ?? now())->format('d.m.Y') }}</p>
+        <p class="animate-fadeInUp" style="font-size: 0.75rem; letter-spacing: 0.4em; text-transform: uppercase; opacity: 0.5; margin-bottom: 3rem;">We're Getting Married</p>
+        <h1 class="animate-fadeInUp delay-1">{{ $content['groom_name'] ?? 'Chú Rể' }}</h1>
+        <p class="amp animate-fadeInUp delay-2">&</p>
+        <h1 class="animate-fadeInUp delay-3">{{ $content['bride_name'] ?? 'Cô Dâu' }}</h1>
+        <p class="date animate-fadeInUp delay-4">{{ \Carbon\Carbon::parse($content['event_date'] ?? now())->format('d.m.Y') }}</p>
+        <div class="scroll-indicator">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
     </section>
 
     @if(in_array('countdown', $widgets))

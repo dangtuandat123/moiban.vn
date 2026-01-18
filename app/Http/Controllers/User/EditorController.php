@@ -91,6 +91,12 @@ class EditorController extends Controller
         // Thêm vào album_photos trong content
         $content = $invitation->content ?? [];
         $albumPhotos = $content['album_photos'] ?? [];
+        
+        // Handle case where album_photos is stored as JSON string
+        if (is_string($albumPhotos)) {
+            $albumPhotos = json_decode($albumPhotos, true) ?? [];
+        }
+        
         $albumPhotos[] = $url;
         $content['album_photos'] = $albumPhotos;
 

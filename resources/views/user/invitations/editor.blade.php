@@ -369,6 +369,8 @@
                                         </div>
                                     </div>
                                     <label class="toggle-switch">
+                                        {{-- Hidden input trick: send 0 when unchecked --}}
+                                        <input type="hidden" name="widgets[{{ $widget->widget_type }}][enabled]" value="0">
                                         <input type="checkbox" name="widgets[{{ $widget->widget_type }}][enabled]" value="1"
                                                {{ $widget->is_enabled ? 'checked' : '' }}>
                                         <span class="toggle-slider"></span>
@@ -599,7 +601,17 @@ $(document).ready(function() {
     const $albumData = $('#album-photos-data');
     let albumPhotos = JSON.parse($albumData.val() || '[]');
     
-    $uploadZone.on('click', () => $albumInput.click());
+    // Click on zone (but not on input) triggers file input
+    $uploadZone.on('click', function(e) {
+        // Prevent infinite loop: don't trigger if click came from input
+        if (e.target === $albumInput[0]) return;
+        $albumInput.trigger('click');
+    });
+    
+    // Prevent input click from bubbling to zone
+    $albumInput.on('click', function(e) {
+        e.stopPropagation();
+    });
     
     $uploadZone.on('dragover', (e) => {
         e.preventDefault();
@@ -696,7 +708,15 @@ $(document).ready(function() {
     const $musicUploadZone = $('#music-upload-zone');
     const $musicInput = $('#music-input');
     
-    $musicUploadZone.on('click', () => $musicInput.click());
+    // Click on zone triggers file input
+    $musicUploadZone.on('click', function(e) {
+        if (e.target === $musicInput[0]) return;
+        $musicInput.trigger('click');
+    });
+    
+    $musicInput.on('click', function(e) {
+        e.stopPropagation();
+    });
     
     $musicInput.on('change', function() {
         const file = this.files[0];
@@ -806,6 +826,12 @@ $(document).ready(function() {
                 success: function() {
                     $autosaveStatus.removeClass('saving').addClass('saved')
                         .html('<i class="fa-solid fa-cloud-check"></i> <span>Đã lưu</span>');
+                    
+                    // Reload preview iframe
+                    const iframe = $('#preview-iframe')[0];
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.location.reload();
+                    }
                 },
                 error: function() {
                     $autosaveStatus.removeClass('saving saved')
