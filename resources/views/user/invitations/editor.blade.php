@@ -131,25 +131,8 @@
                                        class="form-input" placeholder="https://maps.google.com/..." maxlength="500">
                                 <p class="form-hint">Dán link Google Maps để khách dễ tìm đường. Chỉ chấp nhận link từ google.com hoặc goo.gl</p>
                             </div>
-                            
-                            <div class="form-grid-2">
-                                <div class="form-group">
-                                    <label class="form-label">Vĩ độ (Latitude) <span class="optional">(tùy chọn)</span></label>
-                                    <input type="text" name="content[latitude]" 
-                                           value="{{ $invitation->content['latitude'] ?? '' }}"
-                                           class="form-input" placeholder="10.762622"
-                                           pattern="^-?[0-9]*\.?[0-9]+$" title="Chỉ nhập số và dấu chấm">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Kinh độ (Longitude) <span class="optional">(tùy chọn)</span></label>
-                                    <input type="text" name="content[longitude]" 
-                                           value="{{ $invitation->content['longitude'] ?? '' }}"
-                                           class="form-input" placeholder="106.660172"
-                                           pattern="^-?[0-9]*\.?[0-9]+$" title="Chỉ nhập số và dấu chấm">
-                                </div>
                             </div>
-                            <p class="form-hint" style="margin-top: -0.5rem;">Nhập tọa độ để embed bản đồ. Có thể lấy từ Google Maps.</p>
-                            </div>
+
                         </div>
                         
                         <!-- Album ảnh -->
