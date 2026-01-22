@@ -25,14 +25,10 @@
             </button>
         </div>
         <div class="toolbar-right">
-            <a href="{{ $invitation->public_url }}" target="_blank" class="toolbar-btn toolbar-btn-secondary hidden md:inline-flex">
+            <a href="{{ $invitation->public_url }}" target="_blank" class="toolbar-btn toolbar-btn-secondary">
                 <i class="fa-solid fa-external-link"></i>
                 <span class="hidden lg:inline">Xem thiệp</span>
             </a>
-            <button type="submit" form="editor-form" class="toolbar-btn toolbar-btn-primary" id="save-btn">
-                <i class="fa-solid fa-save"></i>
-                <span>Lưu</span>
-            </button>
         </div>
     </header>
     
@@ -841,13 +837,14 @@ $(document).ready(function() {
         }, 2000); // Auto-save after 2 seconds of inactivity
     });
     
-    // ========== FORM SUBMIT ==========
+    // ========== FORM SUBMIT (Ctrl+S) ==========
     $('#editor-form').on('submit', function(e) {
         e.preventDefault();
         clearTimeout(autoSaveTimer);
         
-        const $btn = $('#save-btn');
-        $btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...');
+        // Show saving state
+        $autosaveStatus.removeClass('saved').addClass('saving')
+            .html('<i class="fa-solid fa-spinner fa-spin"></i> <span>Đang lưu...</span>');
         
         $.ajax({
             url: $(this).attr('action'),
@@ -857,16 +854,19 @@ $(document).ready(function() {
             contentType: false,
             success: function() {
                 showToast('✅ Đã lưu thành công!', 'success');
-                $btn.prop('disabled', false).html('<i class="fa-solid fa-save"></i> <span>Lưu</span>');
                 $autosaveStatus.removeClass('saving').addClass('saved')
                     .html('<i class="fa-solid fa-cloud-check"></i> <span>Đã lưu</span>');
                 
                 // Refresh preview
-                $('#preview-iframe')[0].contentWindow.location.reload();
+                const iframe = $('#preview-iframe')[0];
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.location.reload();
+                }
             },
             error: function(xhr) {
                 showToast('❌ Có lỗi xảy ra!', 'error');
-                $btn.prop('disabled', false).html('<i class="fa-solid fa-save"></i> <span>Lưu</span>');
+                $autosaveStatus.removeClass('saving saved')
+                    .html('<i class="fa-solid fa-exclamation-circle text-red-400"></i> <span class="text-red-400">Lỗi</span>');
             }
         });
     });
