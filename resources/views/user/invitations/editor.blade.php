@@ -15,15 +15,8 @@
                 <i class="fa-solid fa-cloud-check"></i>
                 <span>Đã lưu</span>
             </span>
-            <!-- Undo/Redo Buttons -->
-            <div class="toolbar-divider hidden md:block"></div>
-            <button type="button" id="undo-btn" class="toolbar-btn toolbar-btn-ghost toolbar-btn-icon hidden md:inline-flex" title="Hoàn tác (Ctrl+Z)" disabled>
-                <i class="fa-solid fa-rotate-left"></i>
-            </button>
-            <button type="button" id="redo-btn" class="toolbar-btn toolbar-btn-ghost toolbar-btn-icon hidden md:inline-flex" title="Làm lại (Ctrl+Y)" disabled>
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
         </div>
+
         <div class="toolbar-right">
             <a href="{{ $invitation->public_url }}" target="_blank" class="toolbar-btn toolbar-btn-secondary">
                 <i class="fa-solid fa-external-link"></i>
@@ -544,109 +537,8 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // ========== UNDO/REDO HISTORY ==========
-    const maxHistorySize = 50;
-    let historyStack = [];
-    let historyIndex = -1;
-    let isRestoringState = false;
-    
-    // Get current form state as JSON
-    function getFormState() {
-        const formData = {};
-        $('#editor-form').find('input, select, textarea').each(function() {
-            const $el = $(this);
-            const name = $el.attr('name');
-            if (!name) return;
-            
-            if ($el.is(':checkbox')) {
-                formData[name] = $el.is(':checked');
-            } else {
-                formData[name] = $el.val();
-            }
-        });
-        return JSON.stringify(formData);
-    }
-    
-    // Restore form state from JSON
-    function restoreFormState(stateJson) {
-        isRestoringState = true;
-        const state = JSON.parse(stateJson);
-        
-        Object.keys(state).forEach(name => {
-            const $el = $(`[name="${name}"]`);
-            if ($el.is(':checkbox')) {
-                $el.prop('checked', state[name]);
-            } else {
-                $el.val(state[name]);
-            }
-        });
-        
-        isRestoringState = false;
-    }
-    
-    // Save state to history
-    function saveToHistory() {
-        if (isRestoringState) return;
-        
-        const currentState = getFormState();
-        
-        // Don't save if same as last state
-        if (historyIndex >= 0 && historyStack[historyIndex] === currentState) return;
-        
-        // Remove any redo states
-        historyStack = historyStack.slice(0, historyIndex + 1);
-        
-        // Add new state
-        historyStack.push(currentState);
-        
-        // Limit history size
-        if (historyStack.length > maxHistorySize) {
-            historyStack.shift();
-        } else {
-            historyIndex++;
-        }
-        
-        updateUndoRedoButtons();
-    }
-    
-    function undo() {
-        if (historyIndex > 0) {
-            historyIndex--;
-            restoreFormState(historyStack[historyIndex]);
-            updateUndoRedoButtons();
-            showToast('↩️ Đã hoàn tác', 'info');
-        }
-    }
-    
-    function redo() {
-        if (historyIndex < historyStack.length - 1) {
-            historyIndex++;
-            restoreFormState(historyStack[historyIndex]);
-            updateUndoRedoButtons();
-            showToast('↪️ Đã làm lại', 'info');
-        }
-    }
-    
-    function updateUndoRedoButtons() {
-        $('#undo-btn').prop('disabled', historyIndex <= 0);
-        $('#redo-btn').prop('disabled', historyIndex >= historyStack.length - 1);
-    }
-    
-    // Save initial state
-    saveToHistory();
-    
-    // Track changes
-    $('#editor-form').on('change input', 'input, select, textarea', function() {
-        if (!isRestoringState) {
-            saveToHistory();
-        }
-    });
-    
-    // Undo/Redo button clicks
-    $('#undo-btn').on('click', undo);
-    $('#redo-btn').on('click', redo);
-    
     // ========== TAB SWITCHING ==========
+
     $('.sidebar-tab').on('click', function() {
         const tab = $(this).data('tab');
         $('.sidebar-tab').removeClass('active');
@@ -905,17 +797,8 @@ $(document).ready(function() {
             e.preventDefault();
             $('#editor-form').submit();
         }
-        // Ctrl+Z: Undo
-        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-            e.preventDefault();
-            undo();
-        }
-        // Ctrl+Y or Ctrl+Shift+Z: Redo
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
-            e.preventDefault();
-            redo();
-        }
     });
+
     
     // ========== AUTO-SAVE ==========
     let autoSaveTimer;
