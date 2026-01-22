@@ -31,7 +31,13 @@ class InvitationController extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('user.invitations.index', compact('invitations'));
+        $stats = [
+            'active' => $request->user()->invitations()->where('status', 'active')->count(),
+            'trial' => $request->user()->invitations()->where('status', 'trial')->count(),
+            'locked' => $request->user()->invitations()->where('status', 'locked')->count(),
+        ];
+
+        return view('user.invitations.index', compact('invitations', 'stats'));
     }
 
     /**

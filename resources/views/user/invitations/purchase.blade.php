@@ -99,8 +99,14 @@
     <script>
         document.querySelector('form').addEventListener('submit', function(e) {
             const btn = document.getElementById('purchase-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+            
+            // Short timeout to allow form validation to cancel submit if needed
+            setTimeout(() => {
+                if (document.querySelector('form').checkValidity()) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+                }
+            }, 0);
         });
     </script>
 </div>

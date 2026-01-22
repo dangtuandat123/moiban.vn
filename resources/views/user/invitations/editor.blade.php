@@ -520,6 +520,9 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Cache selectors
+    const $formInputs = $('#editor-form').find('input, select, textarea');
+
     // ========== TAB SWITCHING ==========
 
     $('.sidebar-tab').on('click', function() {
@@ -756,22 +759,7 @@ $(document).ready(function() {
         });
     });
     
-    // Delete music
-    $(document).on('click', '#delete-music-btn', function() {
-        $.ajax({
-            url: '{{ route("user.invitations.editor.delete-music", $invitation) }}',
-            method: 'DELETE',
-            data: { _token: '{{ csrf_token() }}' },
-            success: function() {
-                $('#current-music').fadeOut(() => $('#current-music').remove());
-                $('input[name="content[music_url]"]').val('');
-                showToast('✅ Đã xóa nhạc!', 'success');
-            },
-            error: function() {
-                showToast('❌ Xóa thất bại!', 'error');
-            }
-        });
-    });
+    // Delete music handler moved to line 922 to avoid duplication
     
     // ========== KEYBOARD SHORTCUTS ==========
     $(document).on('keydown', function(e) {
@@ -936,6 +924,52 @@ $(document).ready(function() {
         showToast('🗑️ Đã xóa file nhạc', 'info');
     });
 });
+
+// Toast Notification Helper
+function showToast(message, type = 'info') {
+    // Create toast container if not exists
+    if (!$('#toast-container').length) {
+        $('body').append('<div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>');
+    }
+    
+    // Create toast element
+    const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        info: 'bg-blue-500',
+        warning: 'bg-amber-500'
+    };
+    
+    const icon = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle',
+        warning: 'fa-exclamation-triangle'
+    };
+    
+    const toast = $(`
+        <div class="toast-item ${colors[type] || colors.info} text-white px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-3 min-w-[300px]">
+            <i class="fa-solid ${icon[type] || icon.info}"></i>
+            <span class="font-medium">${message}</span>
+            <button class="ml-auto text-white/80 hover:text-white" onclick="$(this).parent().remove()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+    `);
+    
+    $('#toast-container').append(toast);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        toast.removeClass('translate-y-10 opacity-0');
+    });
+    
+    // Auto remove
+    setTimeout(() => {
+        toast.addClass('translate-y-10 opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
 </script>
 
 

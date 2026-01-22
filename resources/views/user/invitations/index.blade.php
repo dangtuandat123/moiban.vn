@@ -26,9 +26,10 @@
         
         <!-- Simple Filter - Easy to understand -->
         @php
-            $activeCount = $invitations->where('status', 'active')->count();
-            $trialCount = $invitations->where('status', 'trial')->count();
-            $lockedCount = $invitations->where('status', 'locked')->count();
+            // Stats are passed from controller
+            $activeCount = $stats['active'] ?? 0;
+            $trialCount = $stats['trial'] ?? 0;
+            $lockedCount = $stats['locked'] ?? 0;
         @endphp
         <div class="glass-card p-4 mb-6">
             <div class="flex flex-wrap items-center gap-2">

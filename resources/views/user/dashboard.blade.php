@@ -53,7 +53,7 @@
                         <i class="fa-solid fa-wallet text-xl md:text-2xl text-amber-400"></i>
                     </div>
                     <span class="quick-action-label">Ví của tôi</span>
-                    <span class="quick-action-hint">{{ number_format(Auth::user()->wallet->balance ?? 0, 0, ',', '.') }}đ</span>
+                    <span class="quick-action-hint">{{ number_format(Auth::user()->wallet?->balance ?? 0, 0, ',', '.') }}đ</span>
                 </a>
                 
                 <a href="{{ route('user.profile') }}" class="quick-action-card group">
@@ -110,7 +110,7 @@
                         <i class="fa-solid fa-wallet text-amber-400 text-lg"></i>
                     </div>
                     <div>
-                        <p class="text-2xl md:text-3xl font-bold">{{ number_format(Auth::user()->wallet->balance ?? 0, 0, ',', '.') }}<span class="text-sm font-normal">đ</span></p>
+                        <p class="text-2xl md:text-3xl font-bold">{{ number_format(Auth::user()->wallet?->balance ?? 0, 0, ',', '.') }}<span class="text-sm font-normal">đ</span></p>
                         <p class="text-xs md:text-sm text-white/50">Số dư ví</p>
                     </div>
                 </div>
