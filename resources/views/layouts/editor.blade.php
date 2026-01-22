@@ -656,6 +656,91 @@
             flex-shrink: 0;
         }
         
+        /* Music Options */
+        .music-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .music-option:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--color-primary);
+        }
+        .music-option.active {
+            background: rgba(183,110,121,0.1);
+            border-color: var(--color-primary);
+        }
+        .music-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .music-option.disabled:hover {
+            background: rgba(255,255,255,0.03);
+            border-color: var(--color-border);
+        }
+        .music-option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .music-option-radio i {
+            display: none;
+            font-size: 0.6rem;
+            color: white;
+        }
+        .music-option.active .music-option-radio {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .music-option.active .music-option-radio i {
+            display: block;
+        }
+        .music-option-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+        .music-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .music-option-icon i {
+            font-size: 1rem;
+        }
+        .music-option-title {
+            display: block;
+            font-weight: 500;
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+        .music-option-desc {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 0.125rem;
+        }
+        .space-y-2 > * + * {
+            margin-top: 0.5rem;
+        }
+
         /* Mobile improvements */
         @media (max-width: 1023px) {
             .form-input { min-height: 48px; font-size: 16px; }

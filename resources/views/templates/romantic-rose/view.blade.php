@@ -950,6 +950,7 @@
         
         @if($hasMusic ?? false)
         @php
+            $musicSource = $content['music_source'] ?? 'off';
             $musicFile = $content['music_file'] ?? null;
             $musicUrl = $content['music_url'] ?? null;
             $youtubeId = null;
@@ -957,12 +958,16 @@
                 preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $musicUrl, $matches);
                 $youtubeId = $matches[1] ?? null;
             }
+            // Chỉ enable nhạc nếu music_source không phải 'off'
+            $shouldPlayFile = $musicSource === 'file' && $musicFile;
+            $shouldPlayUrl = $musicSource === 'url' && $youtubeId;
         @endphp
         
         let isPlaying = false;
         
-        @if($musicFile)
+        @if($shouldPlayFile)
         // File nhạc đã upload
+
         const audio = new Audio('{{ asset("storage/" . $musicFile) }}');
         audio.loop = true;
         
@@ -994,7 +999,7 @@
             musicBtn.addEventListener('click', toggleMusic);
         }
         
-        @elseif($youtubeId)
+        @elseif($shouldPlayUrl)
         // YouTube nhạc
         var ytPlayer;
         var tag = document.createElement('script');
