@@ -302,6 +302,79 @@
             transform: scale(1.1);
         }
         
+        /* Photo Upload Cards */
+        .photo-upload-card {
+            position: relative;
+            border: 2px dashed var(--color-border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            aspect-ratio: 16/9;
+        }
+        .photo-upload-card:hover {
+            border-color: var(--color-primary);
+            background: rgba(183,110,121,0.05);
+        }
+        .photo-upload-card.photo-upload-portrait {
+            aspect-ratio: 3/4;
+        }
+        .photo-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.5);
+        }
+        .photo-placeholder i {
+            font-size: 2rem;
+            color: var(--color-primary);
+            opacity: 0.6;
+        }
+        .photo-placeholder span {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .photo-placeholder small {
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        .photo-preview {
+            position: absolute;
+            inset: 0;
+        }
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 28px;
+            height: 28px;
+            background: rgba(239,68,68,0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .photo-upload-card:hover .photo-remove-btn {
+            opacity: 1;
+        }
+        .photo-remove-btn:hover {
+            background: #dc2626;
+        }
+
         /* Widget toggle */
         .widget-list {
             display: flex;

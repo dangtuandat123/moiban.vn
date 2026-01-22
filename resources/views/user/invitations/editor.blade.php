@@ -135,12 +135,119 @@
 
                         </div>
                         
-                        <!-- Album ảnh -->
+                        <!-- Ảnh cặp đôi -->
+                        <div class="form-section collapsible" data-section="couple-photos">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Ảnh cặp đôi</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+                            
+                            @php
+                                $heroImage = $invitation->content['hero_image'] ?? null;
+                                $groomImage = $invitation->content['groom_image'] ?? null;
+                                $brideImage = $invitation->content['bride_image'] ?? null;
+                                $coupleImage = $invitation->content['couple_image'] ?? null;
+                            @endphp
+                            
+                            <!-- Ảnh nền -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fa-solid fa-image text-purple-400 mr-1"></i>
+                                    Ảnh nền (Hero)
+                                </label>
+                                <div class="photo-upload-card" data-type="hero_image">
+                                    <input type="hidden" name="content[hero_image]" value="{{ $heroImage }}">
+                                    <div class="photo-preview {{ $heroImage ? '' : 'hidden' }}">
+                                        <img src="{{ $heroImage }}" alt="Ảnh nền">
+                                        <button type="button" class="photo-remove-btn"><i class="fa-solid fa-times"></i></button>
+                                    </div>
+                                    <div class="photo-placeholder {{ $heroImage ? 'hidden' : '' }}">
+                                        <i class="fa-solid fa-panorama"></i>
+                                        <span>Chọn ảnh nền</span>
+                                        <small>Khuyến nghị: 1920x1080</small>
+                                    </div>
+                                    <input type="file" class="photo-input hidden" accept="image/*">
+                                </div>
+                            </div>
+                            
+                            <!-- Ảnh chú rể & cô dâu -->
+                            <div class="form-grid-2 mt-4">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fa-solid fa-user-tie text-blue-400 mr-1"></i>
+                                        Ảnh chú rể
+                                    </label>
+                                    <div class="photo-upload-card photo-upload-portrait" data-type="groom_image">
+                                        <input type="hidden" name="content[groom_image]" value="{{ $groomImage }}">
+                                        <div class="photo-preview {{ $groomImage ? '' : 'hidden' }}">
+                                            <img src="{{ $groomImage }}" alt="Ảnh chú rể">
+                                            <button type="button" class="photo-remove-btn"><i class="fa-solid fa-times"></i></button>
+                                        </div>
+                                        <div class="photo-placeholder {{ $groomImage ? 'hidden' : '' }}">
+                                            <i class="fa-solid fa-user-tie"></i>
+                                            <span>Chọn ảnh</span>
+                                        </div>
+                                        <input type="file" class="photo-input hidden" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fa-solid fa-user text-pink-400 mr-1"></i>
+                                        Ảnh cô dâu
+                                    </label>
+                                    <div class="photo-upload-card photo-upload-portrait" data-type="bride_image">
+                                        <input type="hidden" name="content[bride_image]" value="{{ $brideImage }}">
+                                        <div class="photo-preview {{ $brideImage ? '' : 'hidden' }}">
+                                            <img src="{{ $brideImage }}" alt="Ảnh cô dâu">
+                                            <button type="button" class="photo-remove-btn"><i class="fa-solid fa-times"></i></button>
+                                        </div>
+                                        <div class="photo-placeholder {{ $brideImage ? 'hidden' : '' }}">
+                                            <i class="fa-solid fa-user"></i>
+                                            <span>Chọn ảnh</span>
+                                        </div>
+                                        <input type="file" class="photo-input hidden" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ảnh đôi uyên ương -->
+                            <div class="form-group mt-4">
+                                <label class="form-label">
+                                    <i class="fa-solid fa-heart text-red-400 mr-1"></i>
+                                    Ảnh đôi uyên ương
+                                </label>
+                                <div class="photo-upload-card" data-type="couple_image">
+                                    <input type="hidden" name="content[couple_image]" value="{{ $coupleImage }}">
+                                    <div class="photo-preview {{ $coupleImage ? '' : 'hidden' }}">
+                                        <img src="{{ $coupleImage }}" alt="Ảnh đôi uyên ương">
+                                        <button type="button" class="photo-remove-btn"><i class="fa-solid fa-times"></i></button>
+                                    </div>
+                                    <div class="photo-placeholder {{ $coupleImage ? 'hidden' : '' }}">
+                                        <i class="fa-solid fa-heart"></i>
+                                        <span>Chọn ảnh cặp đôi</span>
+                                        <small>Ảnh chụp chung của hai bạn</small>
+                                    </div>
+                                    <input type="file" class="photo-input hidden" accept="image/*">
+                                </div>
+                            </div>
+                            
+                            </div>
+                        </div>
+                        
+                        <!-- Album ảnh cưới -->
                         <div class="form-section collapsible" data-section="album">
                             <button type="button" class="section-header collapsible-toggle">
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-images"></i>
-                                    <span>Album ảnh</span>
+                                    <span>Album ảnh cưới</span>
+                                    @php
+                                        $albumLimit = $invitation->user->subscription_plan === 'premium' ? 30 : ($invitation->user->subscription_plan === 'basic' ? 15 : 5);
+                                    @endphp
+                                    <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full">{{ count($albumPhotos ?? []) }}/{{ $albumLimit }}</span>
                                 </div>
                                 <i class="fa-solid fa-chevron-down section-arrow"></i>
                             </button>
@@ -151,7 +258,7 @@
                                 <i class="fa-solid fa-cloud-upload"></i>
                                 <p><strong>Kéo thả ảnh vào đây</strong></p>
                                 <p>hoặc nhấn để chọn từ máy</p>
-                                <p class="form-hint" style="margin-top: 0.5rem;">Tối đa 10 ảnh, mỗi ảnh dưới 5MB</p>
+                                <p class="form-hint" style="margin-top: 0.5rem;">Tối đa {{ $albumLimit }} ảnh, mỗi ảnh dưới 5MB</p>
                             </div>
                             
                             <div class="album-grid" id="album-preview">
@@ -546,12 +653,20 @@ $(document).ready(function() {
         $('#primary-color-hex').val($(this).val());
     });
     
+    // Trigger autosave khi thả chuột sau khi chọn màu
+    $('#primary-color').on('change', function() {
+        $formInputs.first().trigger('change');
+    });
+    
     $('.color-preset').on('click', function() {
         const color = $(this).data('color');
         $('#primary-color').val(color);
         $('#primary-color-hex').val(color);
         $('.color-preset').removeClass('active');
         $(this).addClass('active');
+        
+        // Trigger autosave
+        $formInputs.first().trigger('change');
     });
     
     // MUSIC PRESETS - Removed (no longer used)
@@ -566,18 +681,104 @@ $(document).ready(function() {
                           .addClass(`preview-frame-${device}`);
     });
     
-    // ========== REFRESH PREVIEW ==========
+    // ========== PHOTO UPLOAD CARDS (Ảnh riêng lẻ) ==========
+    $('.photo-upload-card').on('click', function(e) {
+        // Không trigger khi click vào nút xóa hoặc input
+        if ($(e.target).closest('.photo-remove-btn').length) return;
+        
+        $(this).find('.photo-input').trigger('click');
+    });
+    
+    // Prevent input click from bubbling
+    $('.photo-input').on('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Handle file selection for individual photos
+    $('.photo-input').on('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        
+        const $card = $(this).closest('.photo-upload-card');
+        const photoType = $card.data('type');
+        const $preview = $card.find('.photo-preview');
+        const $placeholder = $card.find('.photo-placeholder');
+        const $hiddenInput = $card.find('input[type="hidden"]');
+        
+        // Validate size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('❌ Ảnh quá lớn (tối đa 5MB)', 'error');
+            return;
+        }
+        
+        // Show loading state
+        $placeholder.html('<i class="fa-solid fa-spinner fa-spin"></i><span>Đang upload...</span>');
+        
+        // Upload via AJAX
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('photo_type', photoType);
+        formData.append('_token', '{{ csrf_token() }}');
+        
+        $.ajax({
+            url: '{{ route("user.invitations.editor.upload", $invitation) }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Update hidden input
+                $hiddenInput.val(response.url);
+                
+                // Show preview
+                $preview.find('img').attr('src', response.url);
+                $preview.removeClass('hidden');
+                $placeholder.addClass('hidden');
+                
+                // Reset placeholder HTML
+                $placeholder.html('<i class="fa-solid fa-image"></i><span>Chọn ảnh</span>');
+                
+                showToast('✅ Đã upload ảnh!', 'success');
+            },
+            error: function() {
+                $placeholder.html('<i class="fa-solid fa-image"></i><span>Chọn ảnh</span>');
+                showToast('❌ Upload thất bại!', 'error');
+            }
+        });
+    });
+    
+    // Remove individual photo
+    $(document).on('click', '.photo-remove-btn', function(e) {
+        e.stopPropagation();
+        
+        const $card = $(this).closest('.photo-upload-card');
+        const $preview = $card.find('.photo-preview');
+        const $placeholder = $card.find('.photo-placeholder');
+        const $hiddenInput = $card.find('input[type="hidden"]');
+        
+        // Clear hidden input
+        $hiddenInput.val('');
+        
+        // Hide preview, show placeholder
+        $preview.addClass('hidden');
+        $placeholder.removeClass('hidden');
+        
+        showToast('🗑️ Đã xóa ảnh', 'info');
+    });
+    
+    // ========== ALBUM UPLOAD ==========
+    // Refresh preview button
     $('#refresh-preview').on('click', function() {
         const iframe = $('#preview-iframe')[0];
         iframe.src = iframe.src;
     });
-    
-    // ========== ALBUM UPLOAD ==========
+
     const $uploadZone = $('#album-upload-zone');
     const $albumInput = $('#album-input');
     const $albumPreview = $('#album-preview');
     const $albumData = $('#album-photos-data');
     let albumPhotos = JSON.parse($albumData.val() || '[]');
+    const albumLimit = {{ $invitation->user->subscription_plan === 'premium' ? 30 : ($invitation->user->subscription_plan === 'basic' ? 15 : 5) }};
     
     // Click on zone (but not on input) triggers file input
     $uploadZone.on('click', function(e) {
@@ -610,10 +811,11 @@ $(document).ready(function() {
     });
     
     function handleFiles(files) {
-        if (albumPhotos.length + files.length > 10) {
-            showToast('Tối đa 10 ảnh!', 'error');
+        if (albumPhotos.length + files.length > albumLimit) {
+            showToast(`Tối đa ${albumLimit} ảnh!`, 'error');
             return;
         }
+
         
         Array.from(files).forEach(file => {
             if (file.size > 5 * 1024 * 1024) {
