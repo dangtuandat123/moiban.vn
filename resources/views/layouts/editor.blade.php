@@ -540,19 +540,24 @@
             }
             
             .preview-frame-mobile {
-                width: 100%;
-                max-width: 100%;
-                height: calc(100vh - 180px);
-                border-radius: 0;
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100% !important;
+                max-height: none !important;
+                border-radius: 0 !important;
             }
             
             .preview-container {
-                padding: 0;
-                padding-bottom: 70px;
+                padding: 0 !important;
+                align-items: stretch !important;
             }
             
             .preview-frame {
-                border-radius: 0;
+                border-radius: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                max-height: none !important;
+                box-shadow: none !important;
             }
         }
         
