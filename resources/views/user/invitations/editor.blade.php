@@ -58,11 +58,16 @@
                     <!-- ========== TAB: CONTENT ========== -->
                     <div id="tab-content" class="tab-panel">
                         <!-- Cặp đôi -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-heart"></i> Cô dâu & Chú rể
-                            </h3>
-                            
+                        <div class="form-section collapsible" data-section="couple">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <span>Cô dâu & Chú rể</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+
                             <div class="form-grid-2">
                                 <div class="form-group">
                                     <label class="form-label">Tên chú rể</label>
@@ -83,14 +88,20 @@
                                 <textarea name="content[couple_message]" rows="3" class="form-input"
                                           placeholder="Cảm ơn bạn đã ghé thăm thiệp cưới của chúng tôi...">{{ $invitation->content['couple_message'] ?? '' }}</textarea>
                             </div>
+                            </div>
                         </div>
                         
                         <!-- Sự kiện -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-calendar"></i> Thông tin sự kiện
-                            </h3>
-                            
+                        <div class="form-section collapsible" data-section="event">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Thông tin sự kiện</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+
                             <div class="form-grid-2">
                                 <div class="form-group">
                                     <label class="form-label">Ngày cưới</label>
@@ -145,14 +156,20 @@
                                 </div>
                             </div>
                             <p class="form-hint" style="margin-top: -0.5rem;">Nhập tọa độ để embed bản đồ. Có thể lấy từ Google Maps.</p>
+                            </div>
                         </div>
                         
                         <!-- Album ảnh -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-images"></i> Album ảnh
-                            </h3>
-                            
+                        <div class="form-section collapsible" data-section="album">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-images"></i>
+                                    <span>Album ảnh</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+
                             <div class="upload-zone" id="album-upload-zone">
                                 <input type="file" id="album-input" name="album_photos[]" multiple accept="image/*" class="hidden">
                                 <i class="fa-solid fa-cloud-upload"></i>
@@ -181,14 +198,20 @@
                             </div>
                             <input type="hidden" name="content[album_photos]" id="album-photos-data" 
                                    value="{{ json_encode($albumPhotos) }}">
+                            </div>
                         </div>
                         
                         <!-- QR Mừng tiền -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-qrcode"></i> QR Mừng tiền
-                            </h3>
-                            
+                        <div class="form-section collapsible collapsed" data-section="qr">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-qrcode"></i>
+                                    <span>QR Mừng tiền</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+
                             <div class="form-group">
                                 <label class="form-label">Ngân hàng</label>
                                 <select name="content[bank_code]" class="form-input">
@@ -219,16 +242,22 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                     
                     <!-- ========== TAB: STYLE ========== -->
                     <div id="tab-style" class="tab-panel hidden">
                         <!-- Màu sắc -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-fill-drip"></i> Màu chủ đạo
-                            </h3>
-                            
+                        <div class="form-section collapsible" data-section="color">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-fill-drip"></i>
+                                    <span>Màu chủ đạo</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
+
                             <div class="form-group">
                                 <div class="color-picker-row">
                                     <input type="color" name="content[primary_color]" id="primary-color"
@@ -246,13 +275,19 @@
                                     @endforeach
                                 </div>
                             </div>
+                            </div>
                         </div>
                         
                         <!-- Typography -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-font"></i> Font chữ
-                            </h3>
+                        <div class="form-section collapsible" data-section="typography">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-font"></i>
+                                    <span>Font chữ</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
                             
                             <div class="form-group">
                                 <label class="form-label">Font tiêu đề</label>
@@ -283,15 +318,22 @@
                                     @endforeach
                                 </select>
                             </div>
+                            </div>
                         </div>
                         
                         <!-- Nhạc nền -->
-                        <div class="form-section">
-                            <h3 class="section-header">
-                                <i class="fa-solid fa-music"></i> Nhạc nền
-                            </h3>
+                        <div class="form-section collapsible" data-section="music">
+                            <button type="button" class="section-header collapsible-toggle">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-music"></i>
+                                    <span>Nhạc nền</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-down section-arrow"></i>
+                            </button>
+                            <div class="section-body">
                             
                             <!-- Upload file nhạc -->
+
                             <div class="form-group">
                                 <label class="form-label">Upload file nhạc <span class="optional">(MP3, WAV, OGG - tối đa {{ config('moiban.max_music_size', 10240) / 1024 }}MB)</span></label>
                                 <div class="upload-zone" id="music-upload-zone" style="padding: 1rem;">
@@ -332,8 +374,10 @@
                                     <i class="fa-brands fa-youtube"></i> Tìm nhạc trên YouTube
                                 </a>
                             </div>
+                            </div>
                         </div>
                     </div>
+
                     
                     <!-- ========== TAB: WIDGETS ========== -->
                     <div id="tab-widgets" class="tab-panel hidden">
@@ -870,6 +914,31 @@ $(document).ready(function() {
             }
         });
     });
+
+    
+    // ========== COLLAPSIBLE SECTIONS ==========
+    $('.collapsible-toggle').on('click', function(e) {
+        e.preventDefault();
+        const $section = $(this).closest('.form-section.collapsible');
+        $section.toggleClass('collapsed');
+        
+        // Lưu trạng thái vào localStorage
+        const sectionName = $section.data('section');
+        const isCollapsed = $section.hasClass('collapsed');
+        localStorage.setItem('editor_section_' + sectionName, isCollapsed ? 'collapsed' : 'expanded');
+    });
+    
+    // Khôi phục trạng thái collapsed từ localStorage
+    $('.form-section.collapsible').each(function() {
+        const sectionName = $(this).data('section');
+        const savedState = localStorage.getItem('editor_section_' + sectionName);
+        if (savedState === 'collapsed') {
+            $(this).addClass('collapsed');
+        } else if (savedState === 'expanded') {
+            $(this).removeClass('collapsed');
+        }
+    });
 });
 </script>
+
 @endpush
