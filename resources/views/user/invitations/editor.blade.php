@@ -794,18 +794,15 @@ $(document).ready(function() {
                     $autosaveStatus.removeClass('saving').addClass('saved')
                         .html('<i class="fa-solid fa-cloud-check"></i> <span>Đã lưu</span>');
                     
-                    // Reload preview iframe
-                    const iframe = $('#preview-iframe')[0];
-                    if (iframe && iframe.contentWindow) {
-                        iframe.contentWindow.location.reload();
-                    }
+                    // Note: Disabled iframe auto-reload to improve performance
+                    // User can manually refresh or use Ctrl+S to see changes
                 },
                 error: function() {
                     $autosaveStatus.removeClass('saving saved')
                         .html('<i class="fa-solid fa-exclamation-circle text-red-400"></i> <span class="text-red-400">Lỗi</span>');
                 }
             });
-        }, 2000); // Auto-save after 2 seconds of inactivity
+        }, 1000); // Auto-save after 1 second of inactivity
     });
     
     // ========== FORM SUBMIT (Ctrl+S) ==========
