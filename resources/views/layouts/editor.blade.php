@@ -248,6 +248,13 @@
         }
         .form-input::placeholder { color: rgba(255,255,255,0.3); }
         
+        /* Date/Time input icons - màu trắng */
+        .form-input[type="date"]::-webkit-calendar-picker-indicator,
+        .form-input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        
         .form-hint {
             font-size: 0.75rem;
             color: rgba(255,255,255,0.4);
