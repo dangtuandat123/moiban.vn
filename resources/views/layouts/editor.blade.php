@@ -490,10 +490,10 @@
         .preview-container {
             flex: 1;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             padding: 1rem;
-            overflow: auto;
+            overflow: hidden;
         }
         
         .preview-frame {
@@ -504,15 +504,16 @@
             transition: all 0.3s ease;
         }
         
-        .preview-frame-mobile { width: 375px; height: 667px; }
-        .preview-frame-tablet { width: 768px; height: 600px; }
-        .preview-frame-desktop { width: 100%; max-width: 1200px; height: calc(100vh - 200px); }
+        .preview-frame-mobile { width: 375px; height: calc(100% - 2rem); max-height: 700px; }
+        .preview-frame-tablet { width: 768px; height: calc(100% - 2rem); max-height: 900px; }
+        .preview-frame-desktop { width: 100%; max-width: 1200px; height: calc(100% - 2rem); }
         
         .preview-frame iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
+
         
         /* ========== MOBILE LAYOUT ========== */
         @media (max-width: 1023px) {
