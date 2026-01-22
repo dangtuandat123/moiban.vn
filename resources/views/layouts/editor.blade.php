@@ -525,23 +525,29 @@
             .editor-sidebar, .editor-preview {
                 position: absolute;
                 inset: 0;
-                top: 56px;
+                top: 0;
                 width: 100%;
             }
             
             .editor-main {
                 position: relative;
+                padding-bottom: 70px;
+            }
+            
+            .sidebar-content {
+                padding-bottom: 80px;
             }
             
             .preview-frame-mobile {
                 width: 100%;
                 max-width: 100%;
-                height: calc(100vh - 120px);
+                height: calc(100vh - 180px);
                 border-radius: 0;
             }
             
             .preview-container {
                 padding: 0;
+                padding-bottom: 70px;
             }
             
             .preview-frame {
@@ -556,25 +562,48 @@
         @media (max-width: 1023px) {
             .mobile-toggle {
                 display: flex;
-                border-top: 1px solid var(--color-border);
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 1) 100%);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255,255,255,0.1);
+                padding: 0.5rem;
+                gap: 0.5rem;
+                z-index: 200;
+                box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
             }
             .mobile-toggle-btn {
                 flex: 1;
-                padding: 0.875rem;
-                font-size: 0.8rem;
-                font-weight: 500;
-                background: var(--color-surface);
-                border: none;
+                padding: 0.875rem 1rem;
+                font-size: 0.85rem;
+                font-weight: 600;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 0.75rem;
                 color: var(--color-text-muted);
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 gap: 0.5rem;
+                transition: all 0.2s ease;
+            }
+            .mobile-toggle-btn:hover {
+                background: rgba(255,255,255,0.1);
+            }
+            .mobile-toggle-btn:active {
+                transform: scale(0.98);
             }
             .mobile-toggle-btn.active {
-                color: var(--color-text);
-                background: var(--color-surface-dark);
+                color: white;
+                background: linear-gradient(135deg, var(--color-primary), #ec4899);
+                border-color: transparent;
+                box-shadow: 0 4px 15px rgba(183,110,121,0.4);
+            }
+            .mobile-toggle-btn i {
+                font-size: 1rem;
             }
         }
         
