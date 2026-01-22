@@ -374,6 +374,9 @@
                                 </div>
                             </div>
                             
+                            <!-- Hidden input để lưu đường dẫn file nhạc -->
+                            <input type="hidden" name="content[music_file]" id="music-file-input" value="{{ $invitation->content['music_file'] ?? '' }}">
+                            
                             <!-- Upload file nhạc (hiện khi chọn file) -->
                             <div id="music-file-section" class="music-source-section mt-4 {{ $musicSource !== 'file' ? 'hidden' : '' }}">
                                 <div class="p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
@@ -383,23 +386,13 @@
                                         <span>Chọn file nhạc</span>
                                         <p class="text-xs text-white/40 mt-1">Tối đa {{ config('moiban.max_music_size', 10240) / 1024 }}MB</p>
                                     </div>
-                                    @if($hasUploadedFile)
-                                    <div id="current-music" class="flex items-center gap-2 mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                                    <div id="current-music" class="{{ $hasUploadedFile ? '' : 'hidden' }} flex items-center gap-2 mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
                                         <i class="fa-solid fa-music text-green-400"></i>
                                         <span class="flex-1 text-sm text-green-400">✅ Đã upload file nhạc</span>
-                                        <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300 p-1" title="Xóa file nhạc">
+                                        <button type="button" class="delete-music-btn text-red-400 hover:text-red-300 p-1" title="Xóa file nhạc">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
-                                    @else
-                                    <div id="current-music" class="hidden flex items-center gap-2 mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                                        <i class="fa-solid fa-music text-green-400"></i>
-                                        <span class="flex-1 text-sm text-green-400">✅ Đã upload file nhạc</span>
-                                        <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300 p-1" title="Xóa file nhạc">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                    @endif
                                 </div>
                             </div>
                             
@@ -561,13 +554,7 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
     
-    // ========== MUSIC PRESETS ==========
-    $('.music-preset').on('click', function() {
-        const url = $(this).data('url');
-        $('input[name="content[music_url]"]').val(url);
-        $('.music-preset').removeClass('active');
-        $(this).addClass('active');
-    });
+    // MUSIC PRESETS - Removed (no longer used)
     
     // ========== DEVICE PREVIEW ==========
     $('.device-btn').on('click', function() {
@@ -734,21 +721,12 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                $('input[name="content[music_url]"]').val(response.url);
+                // Set vào hidden input music_file (không phải music_url)
+                $('#music-file-input').val(response.url);
                 $musicUploadZone.html('<i class="fa-solid fa-cloud-upload"></i> <span>Chọn file nhạc</span>');
                 
                 // Show current music indicator
-                if (!$('#current-music').length) {
-                    $musicUploadZone.after(`
-                        <div id="current-music" class="flex items-center gap-2 mt-2 p-2 bg-white/5 rounded">
-                            <i class="fa-solid fa-music text-primary-400"></i>
-                            <span class="flex-1 text-sm truncate">Đã upload file nhạc</span>
-                            <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    `);
-                }
+                $('#current-music').removeClass('hidden');
                 
                 showToast('✅ Đã upload nhạc!', 'success');
             },
@@ -759,7 +737,7 @@ $(document).ready(function() {
         });
     });
     
-    // Delete music handler moved to line 922 to avoid duplication
+    // Delete music handler is at line 916
     
     // ========== KEYBOARD SHORTCUTS ==========
     $(document).on('keydown', function(e) {
@@ -912,22 +890,31 @@ $(document).ready(function() {
     // Initialize state on load
     updateMusicOptionUI();
     
-    // Xử lý xóa file nhạc
-    $(document).on('click', '#delete-music-btn', function() {
+    // Xử lý xóa file nhạc (dùng class thay vì ID để tránh trùng lặp)
+    $(document).on('click', '.delete-music-btn', function() {
         if (!confirm('Bạn có chắc muốn xóa file nhạc đã upload?')) return;
         
-        // Xóa hidden input music_file
-        $('input[name="content[music_file]"]').val('');
-        
-        // Ẩn current-music indicator
-        $('#current-music').addClass('hidden');
-        
-        // Chuyển sang Tắt
-        $('input[name="content[music_source]"][value="off"]').prop('checked', true).trigger('change');
-        
-        // Trigger autosave
-        $formInputs.trigger('change');
-        showToast('🗑️ Đã xóa file nhạc', 'info');
+        // Gọi AJAX để xóa file trên server
+        $.ajax({
+            url: '{{ route("user.invitations.editor.delete-music", $invitation) }}',
+            method: 'DELETE',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function() {
+                // Xóa hidden input music_file
+                $('#music-file-input').val('');
+                
+                // Ẩn current-music indicator
+                $('#current-music').addClass('hidden');
+                
+                // Chuyển sang Tắt
+                $('input[name="content[music_source]"][value="off"]').prop('checked', true).trigger('change');
+                
+                showToast('🗑️ Đã xóa file nhạc', 'info');
+            },
+            error: function() {
+                showToast('❌ Xóa thất bại!', 'error');
+            }
+        });
     });
 });
 
