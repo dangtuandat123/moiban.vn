@@ -559,6 +559,11 @@
                 max-height: none !important;
                 box-shadow: none !important;
             }
+            
+            /* Ẩn preview header trên mobile - không cần chọn thiết bị */
+            .preview-header {
+                display: none !important;
+            }
         }
         
         /* Mobile toggle tabs */
