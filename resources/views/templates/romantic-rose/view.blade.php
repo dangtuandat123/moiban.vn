@@ -420,6 +420,89 @@
         .music-btn:hover { transform: scale(1.1); }
         .music-btn.playing { animation: pulse 1s infinite; }
         
+        /* ========== INTRO SCREEN ========== */
+        .intro-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--white) 50%, var(--cream) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            cursor: pointer;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .intro-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .intro-title {
+            font-family: '{{ $fontHeading }}', 'Great Vibes', cursive;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .intro-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+        .intro-envelope {
+            width: 120px;
+            height: 90px;
+            background: var(--primary);
+            border-radius: 0 0 0.5rem 0.5rem;
+            position: relative;
+            margin-bottom: 2rem;
+            animation: float 2s ease-in-out infinite;
+        }
+        .intro-envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-top: 45px solid color-mix(in srgb, var(--primary) 80%, black);
+        }
+        .intro-envelope::after {
+            content: '💌';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            font-size: 2rem;
+        }
+        .intro-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), #ec4899);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 10px 40px rgba(183,110,121,0.4);
+        }
+        .intro-btn:hover {
+            transform: scale(1.05);
+        }
+        .intro-hint {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            opacity: 0.6;
+        }
+
         /* ========== FOOTER ========== */
         .footer {
             min-height: auto !important;
@@ -448,14 +531,26 @@
     </div>
     @endif
     
-    {{-- Music Button --}}
-    @if(in_array('music', $widgets) && !empty($content['music_url']))
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Bật/tắt nhạc">
+    {{-- ========== INTRO SCREEN ========== --}}
+    <div class="intro-screen" id="intro-screen">
+        <div class="intro-envelope"></div>
+        <h1 class="intro-title">{{ $content['groom_name'] ?? 'Chú rể' }} & {{ $content['bride_name'] ?? 'Cô dâu' }}</h1>
+        <p class="intro-subtitle">Trân trọng kính mời bạn đến dự lễ cưới của chúng tôi</p>
+        <button type="button" class="intro-btn" id="open-invitation-btn">
+            <i class="fa-solid fa-envelope-open"></i>
+            <span>Mở thiệp</span>
+        </button>
+        <p class="intro-hint">Nhấn để xem thiệp và bật nhạc</p>
+    </div>
+    
+    {{-- Music Button (hiển thị sau khi mở thiệp) --}}
+    @php
+        $hasMusic = in_array('music', $widgets) && (!empty($content['music_url']) || !empty($content['music_file']));
+    @endphp
+    @if($hasMusic)
+    <button class="music-btn" id="musicBtn" title="Bật/tắt nhạc" style="display: none;">
         <i class="fa-solid fa-music" id="musicIcon"></i>
     </button>
-    <audio id="bgMusic" loop>
-        <source src="{{ $content['music_url'] }}" type="audio/mpeg">
-    </audio>
     @endif
     
     {{-- ========== HERO SECTION ========== --}}
@@ -788,6 +883,202 @@
             el.style.animationPlayState = 'paused';
             observer.observe(el);
         });
+    </script>
+    
+    {{-- ========== MUSIC WIDGET ========== --}}
+    @if(in_array('music', $widgets))
+    @php
+        $musicFile = $content['music_file'] ?? null;
+        $musicUrl = $content['music_url'] ?? null;
+    @endphp
+    
+    @if($musicFile || $musicUrl)
+    <style>
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .music-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #ec4899);
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+        .music-btn.playing {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        .music-btn i {
+            transition: transform 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .music-player {
+                bottom: 15px;
+                right: 15px;
+            }
+            .music-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+    @endif
+    @endif
+    
+    {{-- ========== INTRO SCREEN & MUSIC SCRIPT ========== --}}
+    <script>
+    (function() {
+        const introScreen = document.getElementById('intro-screen');
+        const openBtn = document.getElementById('open-invitation-btn');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        
+        @if($hasMusic ?? false)
+        @php
+            $musicFile = $content['music_file'] ?? null;
+            $musicUrl = $content['music_url'] ?? null;
+            $youtubeId = null;
+            if ($musicUrl) {
+                preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $musicUrl, $matches);
+                $youtubeId = $matches[1] ?? null;
+            }
+        @endphp
+        
+        let isPlaying = false;
+        
+        @if($musicFile)
+        // File nhạc đã upload
+        const audio = new Audio('{{ asset("storage/" . $musicFile) }}');
+        audio.loop = true;
+        
+        function playMusic() {
+            audio.play().then(() => {
+                isPlaying = true;
+                if (musicBtn) {
+                    musicBtn.style.display = 'flex';
+                    musicBtn.classList.add('playing');
+                    musicIcon.className = 'fa-solid fa-pause';
+                }
+            }).catch(e => console.log('Autoplay blocked:', e));
+        }
+        
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.classList.remove('playing');
+                musicIcon.className = 'fa-solid fa-music';
+            } else {
+                audio.play();
+                musicBtn.classList.add('playing');
+                musicIcon.className = 'fa-solid fa-pause';
+            }
+            isPlaying = !isPlaying;
+        }
+        
+        if (musicBtn) {
+            musicBtn.addEventListener('click', toggleMusic);
+        }
+        
+        @elseif($youtubeId)
+        // YouTube nhạc
+        var ytPlayer;
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        // Tạo div cho YouTube player
+        var playerDiv = document.createElement('div');
+        playerDiv.id = 'yt-player';
+        playerDiv.style.cssText = 'position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;';
+        document.body.appendChild(playerDiv);
+        
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '1',
+                width: '1',
+                videoId: '{{ $youtubeId }}',
+                playerVars: {
+                    'autoplay': 0,
+                    'loop': 1,
+                    'playlist': '{{ $youtubeId }}',
+                    'controls': 0
+                },
+                events: {
+                    'onReady': function(event) {
+                        // Player sẵn sàng
+                    }
+                }
+            });
+        };
+        
+        function playMusic() {
+            if (ytPlayer && ytPlayer.playVideo) {
+                ytPlayer.playVideo();
+                isPlaying = true;
+                if (musicBtn) {
+                    musicBtn.style.display = 'flex';
+                    musicBtn.classList.add('playing');
+                    musicIcon.className = 'fa-solid fa-pause';
+                }
+            }
+        }
+        
+        function toggleMusic() {
+            if (!ytPlayer) return;
+            if (isPlaying) {
+                ytPlayer.pauseVideo();
+                musicBtn.classList.remove('playing');
+                musicIcon.className = 'fa-solid fa-music';
+            } else {
+                ytPlayer.playVideo();
+                musicBtn.classList.add('playing');
+                musicIcon.className = 'fa-solid fa-pause';
+            }
+            isPlaying = !isPlaying;
+        }
+        
+        if (musicBtn) {
+            musicBtn.addEventListener('click', toggleMusic);
+        }
+        @endif
+        @endif
+        
+        // Xử lý click mở thiệp
+        if (openBtn) {
+            openBtn.addEventListener('click', function() {
+                introScreen.classList.add('hidden');
+                @if($hasMusic ?? false)
+                // Delay một chút rồi phát nhạc
+                setTimeout(playMusic, 500);
+                @endif
+            });
+        }
+        
+        // Click anywhere on intro screen cũng mở thiệp
+        if (introScreen) {
+            introScreen.addEventListener('click', function(e) {
+                if (e.target === introScreen) {
+                    openBtn.click();
+                }
+            });
+        }
+    })();
     </script>
 </body>
 </html>

@@ -333,50 +333,62 @@
                             <div class="section-body">
                             
                             <!-- Upload file nhạc -->
-
                             <div class="form-group">
-                                <label class="form-label">Upload file nhạc <span class="optional">(MP3, WAV, OGG - tối đa {{ config('moiban.max_music_size', 10240) / 1024 }}MB)</span></label>
+                                <label class="form-label">
+                                    <i class="fa-solid fa-cloud-upload text-blue-400 mr-1"></i>
+                                    Upload file nhạc 
+                                    <span class="optional">(MP3, WAV, OGG - tối đa {{ config('moiban.max_music_size', 10240) / 1024 }}MB)</span>
+                                </label>
                                 <div class="upload-zone" id="music-upload-zone" style="padding: 1rem;">
                                     <input type="file" id="music-input" accept=".mp3,.wav,.ogg" class="hidden">
                                     <i class="fa-solid fa-cloud-upload"></i>
                                     <span>Chọn file nhạc</span>
                                 </div>
                                 @if(!empty($invitation->content['music_file']))
-                                <div id="current-music" class="flex items-center gap-2 mt-2 p-2 bg-white/5 rounded">
-                                    <i class="fa-solid fa-music text-primary-400"></i>
-                                    <span class="flex-1 text-sm truncate">Đã upload file nhạc</span>
-                                    <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300">
+                                <div id="current-music" class="flex items-center gap-2 mt-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                                    <i class="fa-solid fa-music text-green-400"></i>
+                                    <span class="flex-1 text-sm text-green-400">Đã upload file nhạc</span>
+                                    <button type="button" id="delete-music-btn" class="text-red-400 hover:text-red-300 p-1">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                                 @endif
                             </div>
                             
-                            <div class="flex items-center gap-2 my-3">
+                            <div class="flex items-center gap-3 my-4">
                                 <div class="h-px bg-white/10 flex-1"></div>
-                                <span class="text-xs text-white/40">HOẶC</span>
+                                <span class="text-xs text-white/40 uppercase tracking-wider">Hoặc</span>
                                 <div class="h-px bg-white/10 flex-1"></div>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Link nhạc <span class="optional">(YouTube/SoundCloud)</span></label>
-                                <input type="url" name="content[music_url]" 
+                                <label class="form-label">
+                                    <i class="fa-brands fa-youtube text-red-400 mr-1"></i>
+                                    Link nhạc 
+                                    <span class="optional">(YouTube/SoundCloud)</span>
+                                </label>
+                                <input type="url" name="content[music_url]" id="music-url-input"
                                        value="{{ $invitation->content['music_url'] ?? '' }}"
                                        class="form-input" placeholder="https://youtube.com/watch?v=..." maxlength="500">
-                                <p class="form-hint">Dán link video nhạc từ YouTube hoặc SoundCloud. Chỉ chấp nhận link từ các nguồn uy tín.</p>
+                                <p class="form-hint">Dán link video nhạc từ YouTube hoặc SoundCloud.</p>
                             </div>
                             
-                            <div class="flex items-center gap-2 mt-3">
-                                <button type="button" class="music-preset" onclick="$('input[name=\'content[music_url]\']').val('')">
-                                    <i class="fa-solid fa-volume-xmark"></i> Tắt nhạc
+                            <!-- Action buttons -->
+                            <div class="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-white/10">
+                                <button type="button" id="clear-music-btn" class="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition text-sm font-medium">
+                                    <i class="fa-solid fa-volume-xmark"></i>
+                                    <span>Tắt nhạc</span>
                                 </button>
-                                <a href="https://www.youtube.com/results?search_query=nhạc+đám+cưới+không+lời" target="_blank" class="text-sm text-primary-400 hover:underline">
-                                    <i class="fa-brands fa-youtube"></i> Tìm nhạc trên YouTube
+                                <a href="https://www.youtube.com/results?search_query=nhạc+đám+cưới+không+lời" target="_blank" 
+                                   class="flex items-center gap-2 px-4 py-2 bg-white/5 text-white/70 rounded-lg hover:bg-white/10 transition text-sm">
+                                    <i class="fa-brands fa-youtube text-red-400"></i>
+                                    <span>Tìm nhạc trên YouTube</span>
                                 </a>
                             </div>
                             </div>
                         </div>
                     </div>
+
 
                     
                     <!-- ========== TAB: WIDGETS ========== -->
@@ -938,7 +950,25 @@ $(document).ready(function() {
             $(this).removeClass('collapsed');
         }
     });
+    
+    // ========== CLEAR MUSIC BUTTON ==========
+    $('#clear-music-btn').on('click', function() {
+        // Xóa link nhạc
+        $('#music-url-input').val('');
+        
+        // Xóa hidden input music_file nếu có
+        $('input[name="content[music_file]"]').val('');
+        
+        // Ẩn current-music indicator
+        $('#current-music').fadeOut();
+        
+        // Trigger autosave
+        $formInputs.trigger('change');
+        
+        showToast('🔇 Đã tắt nhạc nền', 'info');
+    });
 });
 </script>
+
 
 @endpush
