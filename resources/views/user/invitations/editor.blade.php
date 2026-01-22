@@ -974,8 +974,11 @@ $(document).ready(function() {
                     $autosaveStatus.removeClass('saving').addClass('saved')
                         .html('<i class="fa-solid fa-cloud-check"></i> <span>Đã lưu</span>');
                     
-                    // Note: Disabled iframe auto-reload to improve performance
-                    // User can manually refresh or use Ctrl+S to see changes
+                    // Reload preview iframe sau khi lưu
+                    const iframe = $('#preview-iframe')[0];
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.location.reload();
+                    }
                 },
                 error: function() {
                     $autosaveStatus.removeClass('saving saved')
