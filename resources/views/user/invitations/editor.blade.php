@@ -884,17 +884,23 @@ $(document).ready(function() {
     }
     
     // Handle radio button changes
-    $('input[name="content[music_source]"]').on('change', function() {
-        // Bỏ active tất cả options
+    // Function to update UI state based on checked input
+    function updateMusicOptionUI() {
         $('.music-option').removeClass('active');
-        // Thêm active vào option được chọn
-        $(this).closest('.music-option').addClass('active');
-        
-        // Update sections visibility
+        $('input[name="content[music_source]"]:checked').closest('.music-option').addClass('active');
         updateMusicSections();
+    }
+
+    // Handle radio button changes
+    $(document).on('change', 'input[name="content[music_source]"]', function() {
+        updateMusicOptionUI();
         
         // Trigger autosave
-        $formInputs.trigger('change');
+        if (typeof $formInputs !== 'undefined') {
+            $formInputs.trigger('change');
+        } else {
+            $('#editor-form').trigger('change');
+        }
         
         const value = $(this).val();
         if (value === 'off') {
@@ -905,6 +911,9 @@ $(document).ready(function() {
             showToast('🎵 Nhập link YouTube', 'success');
         }
     });
+
+    // Initialize state on load
+    updateMusicOptionUI();
     
     // Xử lý xóa file nhạc
     $(document).on('click', '#delete-music-btn', function() {
